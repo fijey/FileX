@@ -1,0 +1,27 @@
+{
+  "name": "filex",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "husky": "^9.1.7"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0"
+  },
+  "scripts": {
+    "dev": "bun --watch file-x-backend/index.ts",
+    "seed:folders": "bun file-x-backend/prisma/seed/seed.ts",
+    "seed:files": "bun file-x-backend/prisma/seed/files.ts",
+    "seed:all": "bun run seed:folders && bun run seed:files",
+    "prepare": "husky install",
+    "commitlint": "bunx --bun commitlint --edit"
+  },
+  "prisma": {
+    "seed": "bun run seed:all"
+  }
+}
