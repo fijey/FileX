@@ -14,9 +14,9 @@
     "@commitlint/config-conventional": "^19.6.0"
   },
   "scripts": {
-    "dev": "bun --watch file-x-backend/index.ts",
-    "seed:folders": "bun file-x-backend/prisma/seed/seed.ts",
-    "seed:files": "bun file-x-backend/prisma/seed/files.ts",
+    "dev": "bun --watch package/file-x-backend/index.ts",
+    "seed:folders": "bun package/file-x-backend/prisma/seed/seed.ts",
+    "seed:files": "bun package/file-x-backend/prisma/seed/files.ts",
     "seed:all": "bun run seed:folders && bun run seed:files",
     "prepare": "husky install",
     "commitlint": "bunx --bun commitlint --edit"

@@ -1,8 +1,8 @@
 import { Elysia } from "elysia";
 import { FolderController } from "./src/infrastructure/adapters/in/http/folder.controller";
 import { PrismaFolderRepository } from "./src/infrastructure/adapters/out/persistence/prisma-folder.repository";
-import { GetFolderUseCase } from "./src/application/usecases/folder/get-folders.usecase";
-import { CreateFolderUseCase } from "./src/application/usecases/folder/create-folder.usecase";
+import { GetFolder } from "./src/application/usecases/folder/get-folders.usecase";
+import { CreateFolder } from "./src/application/usecases/folder/create-folder.usecase";
 
 class Application {
     private setupInfrastructure() {
@@ -13,8 +13,8 @@ class Application {
 
     private setupUseCases(infrastructure: ReturnType<typeof this.setupInfrastructure>) {
         return {
-            getFoldersUseCase: new GetFolderUseCase(infrastructure.folderRepository),
-            createFolderUseCase: new CreateFolderUseCase(infrastructure.folderRepository)
+            getFoldersUseCase: new GetFolder(infrastructure.folderRepository),
+            createFolderUseCase: new CreateFolder(infrastructure.folderRepository)
         };
     }
 
