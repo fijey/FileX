@@ -2,7 +2,7 @@
   <div :style="`margin-left: ${depth * 1}rem`">
 		<div class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer select-none">
 		<div class="icon">
-			<Folder color="white" fill="white" size="25" />
+			<Folder color="white" fill="white" :size="25" />
 		</div>
 		<div class="title ml-2">
 			{{ folder.name }}
@@ -12,7 +12,7 @@
 			<component :is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" 
 			color="white" 
 			fill="white"
-			size="25" 
+			:size="25" 
 			/>
 		</div>
 		</div>
@@ -29,11 +29,9 @@
 
 	<script lang="ts">
 import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
-import { inject, defineComponent, ref, onMounted, computed, type PropType } from 'vue';
-import { FolderBloc } from '../bloc/FolderBloc';
-import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
-import { FolderRepository } from '../../data/repository/FolderRepository';
+import { inject, defineComponent, type PropType } from 'vue';
 import { FolderEntity } from '../../domain/entities/FolderEntity';
+import type { FolderBloc } from '../bloc/FolderBloc';
 
 export default defineComponent({
 	name: 'FolderItem',
@@ -53,11 +51,11 @@ export default defineComponent({
 		}
 	},
 	setup(props) {
-		const folderBloc = inject('folderBloc');
+		const folderBloc = inject('folderBloc') as FolderBloc;
 
 		return {
-			toggleFolder: (folderId: string) => folderBloc.toggleFolder(folderId),
-			isFolderOpen: (folderId: string) => folderBloc.isFolderOpen(folderId),
+			toggleFolder: (folderId: number) => folderBloc.toggleFolder(folderId),
+			isFolderOpen: (folderId: number) => folderBloc.isFolderOpen(folderId),
 			ChevronUp,
 			ChevronDown
 		};

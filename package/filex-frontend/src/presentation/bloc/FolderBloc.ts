@@ -1,8 +1,9 @@
 import { FolderEntity } from '../../domain/entities/FolderEntity';
+import type { IFolderBloc } from '../../domain/interfaces/IFolderBloc';
 import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
 import { useFolderStore } from '../../stores/folderStore';
 
-export class FolderBloc {
+export class FolderBloc implements IFolderBloc {
   private store = useFolderStore();
 
   constructor(private getFoldersUseCase: GetFolderUseCase) {}
