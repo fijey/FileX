@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0"
+    "@commitlint/config-conventional": "^19.6.0",
+    "pinia": "^2.3.0"
   },
   "scripts": {
     "dev": "bun --watch package/file-x-backend/index.ts",
