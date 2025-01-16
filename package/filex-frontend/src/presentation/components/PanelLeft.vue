@@ -1,6 +1,6 @@
 <template>
 	 <h2 class="text-lg font-semibold mb-4">Folders</h2>
-	<div id="folder-sidebar" class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer group"
+	<div id="folder-sidebar" class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer group select-none"
 		v-for="folder in folders" :key="folder.id">
 		<div class="icon">
 			<Folder color="white" fill="white" size="25"/>
@@ -8,8 +8,10 @@
 		<div class="title ml-2">
 			{{ folder.name }}
 		</div>
-		<div class="ml-auto invisible group-hover:visible">
-			<ChevronUp color="white" fill="white" size="25"/>
+		<div class="ml-auto invisible group-hover:visible" @click.stop="toggleFolder(folder.id)">
+			<component
+			:is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" 
+			color="white" fill="white" size="25"/>
 		</div>
 	</div>
 </template>
@@ -36,8 +38,20 @@ export default defineComponent({
 			const data = await folderBloc.loadFolders();
 		});
 
+		const toggleFolder = (folderId: string) => {
+			folderBloc.toggleFolder(folderId);
+		};
+
+		const isFolderOpen = (folderId: string) => {
+			return folderBloc.isFolderOpen(folderId);
+		};
+
 		return {
-			folders
+			folders,
+			toggleFolder,
+			isFolderOpen,
+			ChevronUp,
+			ChevronDown
 		};
 	},
 })

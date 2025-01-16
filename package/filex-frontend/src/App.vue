@@ -45,7 +45,7 @@ const currentFolder = ref(null)
     rgba(255, 255, 255, 0.24),
     transparent
   );
-  animation: shine 10s infinite;
+  /* animation: shine 10s infinite; */
 }
 
 @keyframes shine {

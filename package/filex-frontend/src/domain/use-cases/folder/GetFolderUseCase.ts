@@ -7,6 +7,6 @@ export class GetFolderUseCase {
     async execute(): Promise<FolderEntity[]> {
         const folderData = await this.folderRepository.getAllFolders();
 
-        return folderData.map((folderModel) => new FolderEntity(folderModel.id, folderModel.name, folderModel.parentId));
+        return folderData.map((folder) => new FolderEntity(folder.id, folder.name, folder.parentId));
     }
 }
