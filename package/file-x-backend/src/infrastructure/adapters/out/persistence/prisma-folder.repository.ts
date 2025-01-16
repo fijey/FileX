@@ -12,9 +12,22 @@ export class PrismaFolderRepository implements FolderRepository {
     async findByParentId(folder: GetFolderRepository): Promise<Folder[]> {
         const folders = await this.prisma.folders.findMany({
             where: { parent_id: folder.parent_id },
-            include: { Files: true }
+            include: { 
+                _count: {
+                    select: {
+                        children: true
+                    }
+                }
+
+             }
         });
-        return folders.map(folder => new Folder(folder));
+        return folders.map(folder => {
+            const { _count, ...rest } = folder;
+            return {
+                ...rest,
+                hasChildren: folder._count.children > 0
+            }
+        });
     }
 
     async create(command: CreateFolderRepository): Promise<Folder> {
