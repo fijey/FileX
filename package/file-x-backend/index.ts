@@ -5,10 +5,10 @@ import { GetFolder} from "./src/application/usecases/folder/get-folders.usecase"
 import { CreateFolder } from "./src/application/usecases/folder/create-folder.usecase";
 import { DeleteFolder } from "./src/application/usecases/folder/delete-folder.usecase";
 import { UpdateFolder } from "./src/application/usecases/folder/update-folder.usecase";
-import { CreateFile } from "./src/application/usecases/file/create-file.usecase";
-import { DeleteFile } from "./src/application/usecases/file/delete-file.usecase";
-import { UpdateFile } from "./src/application/usecases/file/update-file.usecase";
-import { GetFile } from "./src/application/usecases/file/get-files.usecase";
+import { CreateFileUseCase } from "./src/application/usecases/file/create-file.usecase";
+import { DeleteFileUseCase } from "./src/application/usecases/file/delete-file.usecase";
+import { UpdateFileUseCase } from "./src/application/usecases/file/update-file.usecase";
+import { GetFileUseCase } from "./src/application/usecases/file/get-files.usecase";
 import { PrismaFileRepository } from "./src/infrastructure/adapters/out/persistence/prisma-file.repository";
 import { FileController } from "./src/infrastructure/adapters/in/http/file.controller";
 
@@ -29,10 +29,10 @@ class Application {
                 updateFolderUsecase: new UpdateFolder(infrastructure.folderRepository)
             },
             files: {
-                getFilesUseCase: new GetFile(infrastructure.filesRepository),
-                createFileUseCase: new CreateFile(infrastructure.filesRepository),
-                deleteFileUseCase: new DeleteFile(infrastructure.filesRepository),
-                updateFileUsecase: new UpdateFile(infrastructure.filesRepository)
+                getFilesUseCase: new GetFileUseCase(infrastructure.filesRepository),
+                CreateFileCommand: new CreateFileUseCase(infrastructure.filesRepository),
+                DeleteFileCommand: new DeleteFileUseCase(infrastructure.filesRepository),
+                UpdateFileCommand: new UpdateFileUseCase(infrastructure.filesRepository)
             }
         };
     }
@@ -47,9 +47,9 @@ class Application {
             ),
             fileController: new FileController(
                 useCases.files.getFilesUseCase,
-                useCases.files.createFileUseCase,
-                useCases.files.deleteFileUseCase,
-                useCases.files.updateFileUsecase
+                useCases.files.CreateFileCommand,
+                useCases.files.DeleteFileCommand,
+                useCases.files.UpdateFileCommand
             )
         };
     }
