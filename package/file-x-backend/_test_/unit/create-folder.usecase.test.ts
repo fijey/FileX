@@ -1,7 +1,7 @@
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
-import { CreateFolderUseCase } from '../../../folder/create-folder.usecase';
-import type { FolderRepository } from '../../../../../domain/ports/out/folder-repository.port';
-import { Folder } from '../../../../../domain/entities/folder.entity';
+import { CreateFolderUseCase } from '../../src/application/usecases/folder/create-folder.usecase';
+import type { FolderRepository } from '../../src/domain/ports/out/folder-repository.port';
+import { Folder } from '../../src/domain/entities/folder.entity';
 
 describe('CreateFolderUseCase', () => {
     let useCase: CreateFolderUseCase;

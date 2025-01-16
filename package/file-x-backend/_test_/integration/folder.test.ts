@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { Elysia } from 'elysia';
-import { FolderController } from '../../../../../infrastructure/adapters/in/http/folder.controller';
-import { PrismaFolderRepository } from '../../../../../infrastructure/adapters/out/persistence/prisma-folder.repository';
-import { GetFolderUseCase } from '../../../folder/get-folders.usecase';
-import { DeleteFolderUseCase } from '../../../folder/delete-folder.usecase';
-import { UpdateFolderUseCase } from '../../../folder/update-folder.usecase';
-import { CreateFolderUseCase } from '../../../folder/create-folder.usecase';
-import { ApiResponse } from '../../../../../domain/types/response/response.types';
+import { FolderController } from '../../src/infrastructure/adapters/in/http/folder.controller';
+import { PrismaFolderRepository } from '../../src/infrastructure/adapters/out/persistence/prisma-folder.repository';
+import { GetFolderUseCase } from '../../src/application/usecases/folder/get-folders.usecase';
+import { DeleteFolderUseCase } from '../../src/application/usecases/folder/delete-folder.usecase';
+import { UpdateFolderUseCase } from '../../src/application/usecases/folder/update-folder.usecase';
+import { CreateFolderUseCase } from '../../src/application/usecases/folder/create-folder.usecase';
+import { ApiResponse } from '../../src/domain/types/response/response.types';
 
 describe('Folder Integration Tests', () => {
   const uniqueName = `Test Folder ${Date.now()}`;
