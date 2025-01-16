@@ -1,10 +1,10 @@
 import { Elysia } from "elysia";
 import { FolderController } from "./src/infrastructure/adapters/in/http/folder.controller";
 import { PrismaFolderRepository } from "./src/infrastructure/adapters/out/persistence/prisma-folder.repository";
-import { GetFolder} from "./src/application/usecases/folder/get-folders.usecase";
-import { CreateFolder } from "./src/application/usecases/folder/create-folder.usecase";
-import { DeleteFolder } from "./src/application/usecases/folder/delete-folder.usecase";
-import { UpdateFolder } from "./src/application/usecases/folder/update-folder.usecase";
+import { GetFolderUseCase} from "./src/application/usecases/folder/get-folders.usecase";
+import { CreateFolderUseCase } from "./src/application/usecases/folder/create-folder.usecase";
+import { DeleteFolderUseCase } from "./src/application/usecases/folder/delete-folder.usecase";
+import { UpdateFolderUseCase } from "./src/application/usecases/folder/update-folder.usecase";
 import { CreateFileUseCase } from "./src/application/usecases/file/create-file.usecase";
 import { DeleteFileUseCase } from "./src/application/usecases/file/delete-file.usecase";
 import { UpdateFileUseCase } from "./src/application/usecases/file/update-file.usecase";
@@ -23,10 +23,10 @@ class Application {
     private setupUseCases(infrastructure: ReturnType<typeof this.setupInfrastructure>) {
         return {
             folder: {
-                getFoldersUseCase: new GetFolder(infrastructure.folderRepository),
-                createFolderUseCase: new CreateFolder(infrastructure.folderRepository),
-                deleteFolderUseCase: new DeleteFolder(infrastructure.folderRepository),
-                updateFolderUsecase: new UpdateFolder(infrastructure.folderRepository)
+                getFoldersUseCase: new GetFolderUseCase(infrastructure.folderRepository),
+                createFolderUseCase: new CreateFolderUseCase(infrastructure.folderRepository),
+                deleteFolderUseCase: new DeleteFolderUseCase(infrastructure.folderRepository),
+                updateFolderUsecase: new UpdateFolderUseCase(infrastructure.folderRepository)
             },
             files: {
                 getFilesUseCase: new GetFileUseCase(infrastructure.filesRepository),

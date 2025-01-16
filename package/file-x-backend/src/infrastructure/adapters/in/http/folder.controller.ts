@@ -1,23 +1,24 @@
 import { Elysia } from 'elysia';
-import { GetFolder } from '../../../../application/usecases/folder/get-folders.usecase';
-import { CreateFolder } from '../../../../application/usecases/folder/create-folder.usecase';
-import type { CreateFolderUsecase, DeleteFolderUseCase, GetFolderUsecase, UpdateFolderUseCase } from '../../../../domain/ports/in/folder.port';
-import type { DeleteFolder } from '../../../../application/usecases/folder/delete-folder.usecase';
+import { GetFolderUseCase } from '../../../../application/usecases/folder/get-folders.usecase';
+import { CreateFolderUseCase } from '../../../../application/usecases/folder/create-folder.usecase';
+import type { CreateFolderCommand, DeleteFolderCommand, GetFolderQuery, UpdateFolderCommand } from '../../../../domain/ports/in/folder.port';
+import type { DeleteFolderUseCase } from '../../../../application/usecases/folder/delete-folder.usecase';
 import { ResponseFormatter } from '../../../utility/response.formatter';
+import type { UpdateFolderUseCase } from '../../../../application/usecases/folder/update-folder.usecase';
 
 export class FolderController {
     constructor(
-        private readonly getFoldersUseCase: GetFolder,
-        private readonly createFolderUseCase: CreateFolder,
-        private readonly deleteFolderUseCase: DeleteFolder,
-        private readonly updateFolderUseCase: any
+        private readonly getFoldersUseCase: GetFolderUseCase,
+        private readonly createFolderUseCase: CreateFolderUseCase,
+        private readonly deleteFolderUseCase: DeleteFolderUseCase,
+        private readonly updateFolderUseCase: UpdateFolderUseCase
     ) {}
 
     register(app: Elysia) :  Elysia {
          app
             .get('/api/v1/folders', async ({ query }) => {
                 try {
-                    const folder : GetFolderUsecase = {
+                    const folder : GetFolderQuery = {
                         parent_id: query.parent_id ? Number(query.parent_id) : null
                     }
     
@@ -29,7 +30,7 @@ export class FolderController {
                     return ResponseFormatter.error(500, 'Internal server error', errorMessage)
                 }
             })
-            .post('/api/v1/folders', async ({ body }: { body: CreateFolderUsecase }) => {
+            .post('/api/v1/folders', async ({ body }: { body: CreateFolderCommand }) => {
                 try {
                     const folder = await this.createFolderUseCase.execute(body)
                     return ResponseFormatter.success(201, 'Folder created successfully', folder)
@@ -39,7 +40,7 @@ export class FolderController {
                 } 
             })
             .delete('/api/v1/folders/:id', async ({params}) => {
-                const folder: DeleteFolderUseCase = {
+                const folder: DeleteFolderCommand = {
                     id: Number(params.id)
                 } 
 
@@ -52,8 +53,8 @@ export class FolderController {
                 }
 
             })
-            .put('api/v1/folders/:id', async ({ params, body }: { params: { id: string }, body: UpdateFolderUseCase }) => {
-                const data: UpdateFolderUseCase = {
+            .put('api/v1/folders/:id', async ({ params, body }: { params: { id: string }, body: UpdateFolderCommand }) => {
+                const data: UpdateFolderCommand = {
                     ...body,
                     id: Number(params.id)
                 };

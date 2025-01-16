@@ -6,10 +6,6 @@ import type { UpdateFileUseCase } from '../../../../application/usecases/file/up
 import type { CreateFileCommand, DeleteFileCommand, GetFileQuery, UpdateFileCommand } from '../../../../domain/ports/in/file.port';
 import { ResponseFormatter } from '../../../utility/response.formatter';
 
-// import type { CreateFolderUsecase, DeleteFolderUseCase, GetFolderUsecase, UpdateFolderUseCase } from '../../../../domain/ports/in/folder.port';
-// import type { DeleteFolder } from '../../../../application/usecases/folder/delete-folder.usecase';
-// import { ResponseFormatter } from '../../../utility/response.formatter';
-
 export class FileController {
     constructor(
         private readonly getFilesUseCase: GetFileUseCase,
