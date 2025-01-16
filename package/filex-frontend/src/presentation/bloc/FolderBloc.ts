@@ -1,4 +1,3 @@
-import { ref, type Ref } from 'vue';
 import { FolderEntity } from '../../domain/entities/FolderEntity';
 import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
 import { useFolderStore } from '../../stores/folderStore';
@@ -11,19 +10,25 @@ export class FolderBloc {
   async loadFolders() {
     const result = await this.getFoldersUseCase.execute(null);
     this.store.setFolders(result);
+    this.store.setFolderChildren(0, result);
   }
 
   async toggleFolder(folderId: number) {
     this.store.toggleFolder(folderId);
 
     if (this.isFolderOpen(folderId)) {
-      const children = await this.getFoldersUseCase.execute(folderId);
-      this.store.setFolderChildren(folderId, children);
+      const cachedData = this.store.fetchFolderChildren(folderId);
+      if (cachedData.length > 0) {
+        this.store.setFolderChildren(folderId, cachedData);
+      } else {
+        const children = await this.getFoldersUseCase.execute(folderId);
+        this.store.setFolderChildren(folderId, children, 60000);
+      }
     }
   }
 
   isFolderOpen(folderId: number): boolean {
-    return this.store.isOpen[folderId] || false;
+    return this.store.isFolderOpen(folderId);
   }
 
   get folderList(): FolderEntity[] {
