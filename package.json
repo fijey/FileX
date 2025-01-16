@@ -4,10 +4,13 @@
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest",
-    "husky": "^9.1.7"
+    "@types/jest": "^29.5.14",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "@commitlint/cli": "^19.6.1",
@@ -19,7 +22,8 @@
     "seed:files": "bun package/file-x-backend/prisma/seed/files.ts",
     "seed:all": "bun run seed:folders && bun run seed:files",
     "prepare": "husky install",
-    "commitlint": "bunx --bun commitlint --edit"
+    "commitlint": "bunx --bun commitlint --edit",
+    "test": "jest"
   },
   "prisma": {
     "seed": "bun run seed:all"
