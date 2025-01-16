@@ -4,6 +4,7 @@ import { PrismaFolderRepository } from "./src/infrastructure/adapters/out/persis
 import { GetFolder } from "./src/application/usecases/folder/get-folders.usecase";
 import { CreateFolder } from "./src/application/usecases/folder/create-folder.usecase";
 import { DeleteFolder } from "./src/application/usecases/folder/delete-folder.usecase";
+import { UpdateFolder } from "./src/application/usecases/folder/update-folder.usecase";
 
 class Application {
     private setupInfrastructure() {
@@ -16,7 +17,8 @@ class Application {
         return {
             getFoldersUseCase: new GetFolder(infrastructure.folderRepository),
             createFolderUseCase: new CreateFolder(infrastructure.folderRepository),
-            deleteFolderUseCase: new DeleteFolder(infrastructure.folderRepository)
+            deleteFolderUseCase: new DeleteFolder(infrastructure.folderRepository),
+            updateFolderUsecase: new UpdateFolder(infrastructure.folderRepository)
         };
     }
 
@@ -25,7 +27,8 @@ class Application {
             folderController: new FolderController(
                 useCases.getFoldersUseCase,
                 useCases.createFolderUseCase,
-                useCases.deleteFolderUseCase
+                useCases.deleteFolderUseCase,
+                useCases.updateFolderUsecase
             )
         };
     }
