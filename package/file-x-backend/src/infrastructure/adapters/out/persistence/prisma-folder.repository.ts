@@ -1,4 +1,3 @@
-// src/infrastructure/adapters/out/persistence/prisma-folder.repository.ts
 import { PrismaClient } from '@prisma/client';
 import { Folder } from '../../../../domain/entities/folder.entity';
 import type { CreateFolderRepository, DeleteFolderRepository, FolderRepository, GetFolderRepository, UpdateFolderRepository } from '../../../../domain/ports/out/folder-repository.port';
