@@ -1,55 +1,43 @@
 <template>
-	 <h2 class="text-lg font-semibold mb-4">Folders</h2>
-	<div id="folder-sidebar" class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer group select-none"
-		v-for="folder in folders" :key="folder.id">
-		<div class="icon">
-			<Folder color="white" fill="white" size="25"/>
-		</div>
-		<div class="title ml-2">
-			{{ folder.name }}
-		</div>
-		<div class="ml-auto invisible group-hover:visible" @click.stop="toggleFolder(folder.id)">
-			<component
-			:is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" 
-			color="white" fill="white" size="25"/>
-		</div>
-	</div>
+	<h2 class="text-lg font-semibold mb-4">Folders</h2>
+	<FolderItem
+		v-for="folder in folders"
+		:key="folder.id"
+		:folder="folder"
+		:depth="0"
+	 />
 </template>
 
 <script lang="ts">
 import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
-import { defineComponent, ref, onMounted, computed } from 'vue';
+import { defineComponent, ref, onMounted, computed, provide } from 'vue';
 import { FolderBloc } from '../bloc/FolderBloc';
 import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
 import { FolderRepository } from '../../data/repository/FolderRepository';
+import FolderItem from './FolderItem.vue';
 
 export default defineComponent({
 	name: 'PanelLeft',
 	components: {
 		Folder,
 		ChevronUp,
-		ChevronDown
+		ChevronDown,
+		FolderItem
 	},
 	setup() {
 		const folderBloc = new FolderBloc(new GetFolderUseCase(new FolderRepository()));
 		const folders = computed(() => folderBloc.folderList);
 
+		provide('folderBloc', folderBloc);
+
 		onMounted(async () => {
 			const data = await folderBloc.loadFolders();
 		});
 
-		const toggleFolder = (folderId: string) => {
-			folderBloc.toggleFolder(folderId);
-		};
-
-		const isFolderOpen = (folderId: string) => {
-			return folderBloc.isFolderOpen(folderId);
-		};
-
 		return {
 			folders,
-			toggleFolder,
-			isFolderOpen,
+			toggleFolder: (folderId: string) => folderBloc.toggleFolder(folderId),
+			isFolderOpen: (folderId: string) => folderBloc.isFolderOpen(folderId),
 			ChevronUp,
 			ChevronDown
 		};

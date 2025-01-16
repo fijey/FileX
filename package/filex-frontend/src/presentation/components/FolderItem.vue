@@ -1,0 +1,57 @@
+<template>
+	<div :class="`pl-${depth * 4}`">
+		<div class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer group select-none">
+			<div class="icon">
+				<Folder color="white" fill="white" size="25" />
+			</div>
+			<div class="title ml-2">
+				{{ folder.name }}
+			</div>
+			<div class="ml-auto opacity-0 group-hover:opacity-100"
+				@click.stop="toggleFolder(folder.id)">
+				<component :is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" color="white" fill="white"
+					size="25" />
+			</div>
+		</div>
+	</div>
+</template>
+
+
+	<script lang="ts">
+import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
+import { inject, defineComponent, ref, onMounted, computed, type PropType } from 'vue';
+import { FolderBloc } from '../bloc/FolderBloc';
+import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
+import { FolderRepository } from '../../data/repository/FolderRepository';
+import { FolderEntity } from '../../domain/entities/FolderEntity';
+
+export default defineComponent({
+	name: 'FolderItem',
+	components: {
+		Folder,
+		ChevronUp,
+		ChevronDown
+	},
+	props: {
+		folder: {
+			type: Object as PropType<FolderEntity>,
+			required: true
+		},
+		depth: {
+			type: Number,
+			default: 0
+		}
+	},
+	setup(props) {
+		const folderBloc = inject('folderBloc');
+
+		return {
+			toggleFolder: (folderId: string) => folderBloc.toggleFolder(folderId),
+			isFolderOpen: (folderId: string) => folderBloc.isFolderOpen(folderId),
+			ChevronUp,
+			ChevronDown
+		};
+	},
+})
+
+</script>
