@@ -1,7 +1,7 @@
 // src/infrastructure/adapters/out/persistence/prisma-folder.repository.ts
 import { PrismaClient } from '@prisma/client';
 import { Folder } from '../../../../domain/entities/folder.entity';
-import type { CreateFolderRepository, FolderRepository, GetFolderRepository } from '../../../../domain/ports/out/folder-repository.port';
+import type { CreateFolderRepository, DeleteFolderRepository, FolderRepository, GetFolderRepository } from '../../../../domain/ports/out/folder-repository.port';
 
 export class PrismaFolderRepository implements FolderRepository {
     private prisma: PrismaClient;
@@ -23,5 +23,13 @@ export class PrismaFolderRepository implements FolderRepository {
             data: command
         });
         return new Folder(folder);
+    }
+
+    async delete(folder: DeleteFolderRepository): Promise<string> {
+        console.log(folder);
+        await this.prisma.folders.delete({
+            where: { id: folder.id }
+        });
+        return 'Folder deleted successfully';
     }
 }
