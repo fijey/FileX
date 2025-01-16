@@ -1,7 +1,8 @@
 export interface FolderModel {
-    id: string;
+    id: number;
     name: string;
-    parentId: string | null;
+    parentId: number | null;
     children: FolderModel[];
+    hasChildren: boolean;
   }
   

@@ -8,7 +8,7 @@
         </div>
         
         <div class="col-span-9 glass-morphism p-4 rounded-lg">
-          <h2 class="text-lg font-semibold mb-4">Files</h2>
+          <PanelRight/>
         </div>
       </div>
     </main>
@@ -19,6 +19,7 @@
 import { ref } from 'vue'
 import { Folder } from 'lucide-vue-next'
 import PanelLeft from '@/presentation/components/PanelLeft.vue'
+import PanelRight from '@/presentation/components/PanelRight.vue'
 
 const currentFolder = ref(null)
 </script>

@@ -1,19 +1,29 @@
 <template>
-	<div :class="`pl-${depth * 4}`">
-		<div class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer group select-none">
-			<div class="icon">
-				<Folder color="white" fill="white" size="25" />
-			</div>
-			<div class="title ml-2">
-				{{ folder.name }}
-			</div>
-			<div class="ml-auto opacity-0 group-hover:opacity-100"
-				@click.stop="toggleFolder(folder.id)">
-				<component :is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" color="white" fill="white"
-					size="25" />
-			</div>
+  <div :style="`margin-left: ${depth * 1}rem`">
+		<div class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer select-none">
+		<div class="icon">
+			<Folder color="white" fill="white" size="25" />
+		</div>
+		<div class="title ml-2">
+			{{ folder.name }}
+		</div>
+		<div v-if="folder.hasChildren" class="ml-auto chevron-icon transition-opacity"
+			@click.stop="toggleFolder(folder.id)">
+			<component :is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" 
+			color="white" 
+			fill="white"
+			size="25" 
+			/>
+		</div>
 		</div>
 	</div>
+	<FolderItem
+		v-if="isFolderOpen(folder.id)"
+		v-for="child in folder.children"
+		:key="child.id"
+		:folder="child"
+		:depth="depth + 1"
+	/>
 </template>
 
 

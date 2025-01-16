@@ -1,4 +1,4 @@
-<template>
+<template class="group">
 	<h2 class="text-lg font-semibold mb-4">Folders</h2>
 	<FolderItem
 		v-for="folder in folders"
@@ -36,8 +36,6 @@ export default defineComponent({
 
 		return {
 			folders,
-			toggleFolder: (folderId: string) => folderBloc.toggleFolder(folderId),
-			isFolderOpen: (folderId: string) => folderBloc.isFolderOpen(folderId),
 			ChevronUp,
 			ChevronDown
 		};

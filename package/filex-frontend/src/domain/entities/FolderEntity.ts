@@ -1,9 +1,17 @@
+import type { FolderModel } from "../../data/models/FolderModel";
+
 export class FolderEntity {
+    id!: number;
+	name!: string;
+	parentId!: number | null;
+	children!: FolderModel[];
+	hasChildren!: boolean;
     constructor(
-		public id: string,
-		public name: string,
-		public parentId: string | null,
-		public children: FolderEntity[] = [],
-    ) {}
+		props: FolderModel
+    ) {
+		Object.assign(this, {
+			...props
+		});
+	}
   }
   

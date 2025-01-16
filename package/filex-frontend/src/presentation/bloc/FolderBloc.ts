@@ -9,15 +9,20 @@ export class FolderBloc {
   constructor(private getFoldersUseCase: GetFolderUseCase) {}
 
   async loadFolders() {
-    const result = await this.getFoldersUseCase.execute();
+    const result = await this.getFoldersUseCase.execute(null);
     this.store.setFolders(result);
   }
 
-  toggleFolder(folderId: string) {
+  async toggleFolder(folderId: number) {
     this.store.toggleFolder(folderId);
+
+    if (this.isFolderOpen(folderId)) {
+      const children = await this.getFoldersUseCase.execute(folderId);
+      this.store.setFolderChildren(folderId, children);
+    }
   }
 
-  isFolderOpen(folderId: string): boolean {
+  isFolderOpen(folderId: number): boolean {
     return this.store.isOpen[folderId] || false;
   }
 

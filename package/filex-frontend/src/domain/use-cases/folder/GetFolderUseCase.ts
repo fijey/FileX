@@ -4,9 +4,9 @@ import { FolderEntity } from '../../entities/FolderEntity';
 export class GetFolderUseCase {
     constructor(private folderRepository: IFolderRepository) {}
 
-    async execute(): Promise<FolderEntity[]> {
-        const folderData = await this.folderRepository.getAllFolders();
+    async execute(folderId: number | null): Promise<FolderEntity[]> {
+        const folderData = await this.folderRepository.getAllFolders(folderId);
 
-        return folderData.map((folder) => new FolderEntity(folder.id, folder.name, folder.parentId));
+        return folderData.map((folder) => new FolderEntity(folder));
     }
 }
