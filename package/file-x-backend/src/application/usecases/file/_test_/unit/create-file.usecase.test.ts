@@ -1,7 +1,7 @@
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
-import { CreateFileUseCase } from '../create-file.usecase';
-import type { FileRepository } from '../../../../domain/ports/out/file-repository.port';
-import { File } from '../../../../domain/entities/file.entity';
+import { CreateFileUseCase } from '../../create-file.usecase';
+import type { FileRepository } from '../../../../../domain/ports/out/file-repository.port';
+import { File } from '../../../../../domain/entities/file.entity';
 
 describe('CreateFileUseCase', () => {
 	let useCase: CreateFileUseCase;
