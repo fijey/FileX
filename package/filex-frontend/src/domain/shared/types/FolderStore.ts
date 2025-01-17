@@ -1,4 +1,4 @@
-import type { FolderModel } from "../models/FolderModel";
+import type { FolderModel } from "../../models/FolderModel";
 import type { CacheEntry } from "./CacheEntry";
 
 export interface FolderState {

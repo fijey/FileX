@@ -14,6 +14,10 @@ import { defineComponent, ref, onMounted, computed, provide } from 'vue';
 import { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
 import { FolderRepository } from '../../application/repository/FolderRepository';
+import { FileRepository } from '../../application/repository/FileRepository';
+import { CacheService } from '../../application/services/CacheService';
+import { ToggleFolderUseCase } from '../../application/use-cases/folder/ToggleFolderUseCase';
+import { LoadFilesUseCase } from '../../application/use-cases/folder/LoadFilesUseCase';
 import FolderItem from './FolderItem.vue';
 
 export default defineComponent({
@@ -25,7 +29,20 @@ export default defineComponent({
 		FolderItem
 	},
 	setup() {
-		const panelLeftBloc = new PanelLeftBloc(new GetFolderUseCase(new FolderRepository()));
+		// Initialize dependencies
+		const cacheService = new CacheService();
+		const fileRepository = new FileRepository();
+		const folderRepository = new FolderRepository();
+		const getFoldersUseCase = new GetFolderUseCase(folderRepository);
+		const toggleFolderUseCase = new ToggleFolderUseCase(folderRepository, cacheService);
+		const loadFilesUseCase = new LoadFilesUseCase(fileRepository, cacheService);
+
+		// Create bloc instance
+		const panelLeftBloc = new PanelLeftBloc(
+			getFoldersUseCase,
+			toggleFolderUseCase,
+			loadFilesUseCase
+		);
 		const folders = computed(() => panelLeftBloc.folderList);
 
 		provide('panelLeftBloc', panelLeftBloc);

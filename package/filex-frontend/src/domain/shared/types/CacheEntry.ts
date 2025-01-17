@@ -1,5 +1,5 @@
-import type { FileModel } from '../models/FileModel';
-import type { FolderModel } from '../models/FolderModel';
+import type { FileModel } from '../../models/FileModel';
+import type { FolderModel } from '../../models/FolderModel';
 
 export interface CacheEntry {
     name: string;

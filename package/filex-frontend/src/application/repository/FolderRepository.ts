@@ -1,6 +1,6 @@
-import type { PaginationOptions } from "../../../../file-x-backend/src/domain/types/pagination-options";
 import type { IFolderRepository } from "../../domain/repository/IFolderRepository";
-import type { GetFolderResponse } from "../../domain/response/GetFolderResponse";
+import type { GetFolderResponse } from "../../domain/shared/response/GetFolderResponse";
+import type { PaginationOptions } from '../../domain/shared/types/PaginationOptions';
 
 
 export class FolderRepository implements IFolderRepository {
@@ -17,7 +17,7 @@ export class FolderRepository implements IFolderRepository {
         if (!response.ok) {
             throw new Error('Failed to get folders');
         }
-
-        return await response.json();
+        const result = await response.json()
+        return result.data;
     }
 }

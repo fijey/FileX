@@ -1,5 +1,15 @@
 import { useGlobalStore } from '../stores/globalStore';
 import { useSearchStore } from '../stores/searchStore';
+import type { FolderModel } from "../../domain/models/FolderModel";
+import type { FileModel } from "../../domain/models/FileModel";
+
+interface SearchResponse<T> {
+  data: {
+    data: T[];
+    hasMore: boolean;
+    total?: number;
+  }
+}
 
 export class SearchBloc {
     private globalStore = useGlobalStore();
@@ -25,7 +35,7 @@ export class SearchBloc {
         await this.searchFolders(query);
     }
 
-    private async searchFolders(query: string) {
+    private async searchFolders(query: string): Promise<void> {
         try {
             const response = await fetch(
                 `http://localhost:3000/api/v1/folders?` + 
@@ -37,8 +47,11 @@ export class SearchBloc {
                 })
             );
 
-            const responseData = await response.json();
-            this.searchStore.setSearchResults(responseData.data.data, responseData.data.hasMore);
+            const responseData = await response.json() as SearchResponse<FolderModel>;
+            this.searchStore.setSearchResults(
+                responseData.data.data, 
+                responseData.data.hasMore
+            );
             
             // If no more folders, start searching files
             if (!responseData.data.hasMore && responseData.data.data.length === 0) {

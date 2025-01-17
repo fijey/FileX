@@ -2,10 +2,12 @@ import { FolderModel } from '../../domain/models/FolderModel';
 import type { IPanelLeftBloc } from '../../domain/interfaces/IPanelLeftBloc';
 import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
 import { useGlobalStore } from '../stores/globalStore';
-import { toRaw } from '../../domain/utils/reactivity';
+import { toRaw } from '../../domain/shared/utils/reactivity';
 import { useSearchStore } from '../stores/searchStore';
 import { ref } from 'vue';
 import type { FileModel } from '../../domain/models/FileModel';
+import type { LoadFilesUseCase } from '../../application/use-cases/folder/LoadFilesUseCase';
+import type { ToggleFolderUseCase } from "../../application/use-cases/folder/ToggleFolderUseCase";
 
 export class PanelLeftBloc implements IPanelLeftBloc {
   private store = useGlobalStore();
@@ -13,27 +15,25 @@ export class PanelLeftBloc implements IPanelLeftBloc {
   private currentPage = ref(1);
   private isLoadingFiles = false;
 
-  constructor(private getFoldersUseCase: GetFolderUseCase) {}
+  constructor(
+    private getFoldersUseCase: GetFolderUseCase,
+    private toggleFolderUseCase: ToggleFolderUseCase,
+    private loadFilesUseCase: LoadFilesUseCase
+  ) {}
 
   async loadFolders() {
     const result = await this.getFoldersUseCase.execute(null, { page: 1, limit: 10 });
-    const { data: folders, hasMore } = result.data;
-    this.store.setFolders(folders);
-    this.store.setFolderChildren(0, '', folders, 60000, hasMore);
+    this.store.setFolders(result.data);
+    console.log('result', result);
+    this.store.setFolderChildren(0, '', result.data, 60000, result.hasMore);
   }
 
   async toggleFolderExpansion(folderId: number, folderName: string) {
     this.store.toggleFolderExpansion(folderId);
 
     if (this.isFolderExpanded(folderId)) {
-        const cachedData = this.store.fetchFolderChildren(folderId);
-        if (cachedData.length > 0) {
-            this.store.setFolderChildren(folderId, folderName, cachedData);
-        } else {
-            const response = await this.getFoldersUseCase.execute(folderId, { page: 1, limit: 10 });
-            const { data: folders, hasMore } = response.data;
-            this.store.setFolderChildren(folderId, folderName, folders, 60000, hasMore);
-        }
+      const result = await this.toggleFolderUseCase.execute(folderId, folderName);
+      this.store.setFolderChildren(folderId, folderName, result.data, 60000, result.hasMore);
     }
   }
 
@@ -49,7 +49,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
     } else {
         // from API
         const response = await this.getFoldersUseCase.execute(folderId, { page: 1, limit: 10 });
-        const { data: folders, hasMore } = response.data;
+        const { data: folders, hasMore } = response;
         
         this.store.setFolderChildren(folderId, folderName, folders, 60000, hasMore);
         if (folders.length > 0) {
@@ -66,7 +66,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
             this.store.selectedFolderId, 
             { page: this.currentPage.value, limit: 10 }
         );
-        const { data: folders, hasMore } = result.data;
+        const { data: folders, hasMore } = result;
         
         this.store.setFolderChildren(
             this.store.selectedFolderId!, 

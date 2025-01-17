@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
 import { FolderModel } from '../../domain/models/FolderModel';
-import type { CacheEntry } from '../../domain/types/CacheEntry';
-import type { FolderState } from '../../domain/types/FolderStore';
+import type { CacheEntry } from '../../domain/shared/types/CacheEntry';
+import type { FolderState } from '../../domain/shared/types/FolderStore';
 import type { FileModel } from '../../domain/models/FileModel';
+import { toRaw } from '../../domain/shared/utils/reactivity';
 
 // Add FileCache type
 interface FileCache {
@@ -36,8 +37,6 @@ export const useGlobalStore = defineStore('folder', {
       const updateFoldersRecursively = (folders: FolderModel[]): FolderModel[] => {
         return folders.map(folder => {
           if (folder.id === folderId) {
-            // If shouldAppend is true and there are existing children, append
-            // Otherwise replace the children
             const existingChildren = this.folderCache.get(folderId)?.data || [];
             const updatedChildren = shouldAppend && existingChildren.length > 0 ? 
               [...existingChildren, ...children] : 
@@ -55,19 +54,18 @@ export const useGlobalStore = defineStore('folder', {
       };
 
       this.folders = updateFoldersRecursively(this.folders);
-
-      // Update cache similarly
+      
+      // Update cache
       const existingCache = this.folderCache.get(folderId);
       const existingData = existingCache?.data || [];
       const updatedData = shouldAppend && existingCache ? 
         [...existingData, ...children] : 
         children;
 
-      const expiry = Date.now() + ttl;
       this.folderCache.set(folderId, { 
         name: folderName, 
         data: updatedData, 
-        expiry,
+        expiry: Date.now() + ttl,
         hasMore 
       });
     },

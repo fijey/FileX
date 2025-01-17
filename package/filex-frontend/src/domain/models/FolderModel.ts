@@ -16,8 +16,4 @@ export class FolderModel implements IFolderModel {
       this.children = props.children || [];
       this.hasChildren = props.hasChildren || false;
   }
-
-  toggleActive(): void {
-      this.isActive = !this.isActive;
-  }
 }

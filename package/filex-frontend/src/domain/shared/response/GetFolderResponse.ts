@@ -1,4 +1,4 @@
-import type { FolderModel } from '../models/FolderModel';
+import { FolderModel } from '../../models/FolderModel';
 
 export interface GetFolderResponse {
     data: FolderModel[];
