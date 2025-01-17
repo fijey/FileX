@@ -45,6 +45,20 @@ filex/
 │       └── tests/
 ```
 
+# Preview Project
+
+## Screenshot 1
+![Screenshot 1](https://res.cloudinary.com/dlrsduhgh/image/upload/v1737157119/Screenshot_18-Jan_06-28-27_Google-chrome_ozkmwg.png)
+
+## Screenshot 2
+![Screenshot 2](https://res.cloudinary.com/dlrsduhgh/image/upload/v1737157119/Screenshot_18-Jan_06-28-11_Google-chrome_zut8ut.png)
+
+## Screenshot 3
+![Screenshot 3](https://res.cloudinary.com/dlrsduhgh/image/upload/v1737157119/Screenshot_18-Jan_06-27-51_Google-chrome_cyil1n.png)
+
+## Screenshot 4
+![Screenshot 5](https://res.cloudinary.com/dlrsduhgh/image/upload/v1737157119/Screenshot_18-Jan_06-27-44_Google-chrome_krnroy.png)
+
 ## Prerequisites
 
 - Bun >= 1.1.43
