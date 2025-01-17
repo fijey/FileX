@@ -5,7 +5,6 @@ export class DeleteFolderUseCase {
     constructor(private folderRepository: FolderRepository) {}
 
     async execute(deleteFolderCommand: DeleteFolderCommand): Promise<string> {
-        console.log(deleteFolderCommand);
         return this.folderRepository.delete(deleteFolderCommand);
     }
 }

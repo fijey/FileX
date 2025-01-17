@@ -17,7 +17,6 @@ export class PanelRightBloc {
     }
 
     get searchResultFiles() {
-        console.log('search file', this.searchStore.getFileResults);
         return this.searchStore.getFileResults;
     }
 

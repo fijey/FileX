@@ -8,14 +8,14 @@ async function main() {
   await prisma.folders.deleteMany(); // Clear existing folders
   console.log("Existing folders cleared.");
 
-  const TOTAL_FOLDERS = 1000; // Total folders to create
-  let folderCount = 0;
+  const TOTAL_FOLDERS = 10000; // Total folders to create
+  let folderCount = 10;
 
   // Recursive function to create folders
   async function createFolders(parentId: number | null, level: number, prefix: string) {
     if (folderCount >= TOTAL_FOLDERS || level > 3) return;
 
-    const maxFoldersPerLevel = 20; // Max folders per parent
+    const maxFoldersPerLevel = 100; // Max folders per parent
     for (let i = 0; i < maxFoldersPerLevel; i++) {
       if (folderCount >= TOTAL_FOLDERS) break;
 
@@ -31,7 +31,7 @@ async function main() {
       console.log(`Created: ${newFolder.name} (ID: ${newFolder.id})`);
 
       // Recursively create subfolders
-      if (level < 3) {
+      if (level < 5) {
         await createFolders(newFolder.id, level + 1, `${folderName} > `);
       }
     }

@@ -24,7 +24,6 @@ export class PanelLeftBloc implements IPanelLeftBloc {
   async loadFolders() {
     const result = await this.getFoldersUseCase.execute(null, { page: 1, limit: 10 });
     this.store.setFolders(result.data);
-    console.log('result', result);
     this.store.setFolderChildren(0, '', result.data, 60000, result.hasMore);
   }
 

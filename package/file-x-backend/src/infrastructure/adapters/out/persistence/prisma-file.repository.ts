@@ -12,7 +12,6 @@ export class PrismaFileRepository implements FileRepository {
 
     async findByFolderId(file: GetFileRepository, pagination?: PaginationOptions, searchQuery?: string): Promise<{ data: File[], total?: number }> {
         if (searchQuery) {
-            console.log('Searching for files with query:', searchQuery);
             const recursiveQuery = `
                 WITH RECURSIVE FolderHierarchy AS (
                     -- Base case: start with the specified folder
