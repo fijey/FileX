@@ -23,7 +23,8 @@ A modern web-based file explorer built with Vue 3 and Bun, featuring a dual-pane
 - Bun runtime
 - Elysia framework
 - Prisma ORM
-- PostgreSQL/MySQL/MariaDB
+- MySQL
+- Jest For Testing
 
 ## Project Structure
 
