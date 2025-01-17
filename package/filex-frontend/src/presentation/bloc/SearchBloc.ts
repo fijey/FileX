@@ -1,43 +1,27 @@
 import { useFolderStore } from '../../stores/folderStore';
-import { ref } from 'vue';
-import type { FolderEntity } from '../../domain/entities/FolderEntity';
-
-interface SearchResults {
-  folders: FolderEntity[];
-  files: any[]; // Add FileEntity type if available
-  hasMoreFolders: boolean;
-  hasMoreFiles: boolean;
-}
+import { useSearchStore } from '../../stores/searchStore';
 
 export class SearchBloc {
-    private store = useFolderStore();
-    private page = ref(1);
-    private searchResults = ref<SearchResults>({
-        folders: [],
-        files: [],
-        hasMoreFolders: true,
-        hasMoreFiles: true
-    });
-    private isSearching = ref(false);
-    
-    constructor() {}
+    private folderStore = useFolderStore();
+    private searchStore = useSearchStore();
     
     get folderName() {
-        const selectedFolder = this.store.selectedFolderContents;
+        const selectedFolder = this.folderStore.selectedFolderContents;
         return selectedFolder?.name || 'Root Folder';
     }
 
     get currentFolderId() {
-        return this.store.selectedFolderId;
+        return this.folderStore.selectedFolderId;
     }
 
     async search(query: string) {
         if (!query.trim()) {
-            this.resetSearch();
+            this.searchStore.resetSearch();
             return;
         }
 
-        this.isSearching.value = true;
+        this.searchStore.setSearching(true);
+        this.searchStore.setSearchQuery(query);
         await this.searchFolders(query);
     }
 
@@ -46,64 +30,36 @@ export class SearchBloc {
             const response = await fetch(
                 `http://localhost:3000/api/v1/folders?` + 
                 new URLSearchParams({
-                    query,
-                    folderId: this.currentFolderId || 0,
-                    page: this.page.value.toString(),
-                    type: 'folder'
+                    search: query,
+                    parent_id: this.currentFolderId?.toString() || '',
+                    page: this.searchStore.getCurrentPage.toString(),
+                    limit: '10'
                 })
             );
 
-            const data = await response.json();
+            const responseData = await response.json();
+            this.searchStore.setSearchResults(responseData.data.data, responseData.data.hasMore);
+            this.searchStore.setSearching(false);
             
-            if (this.page.value === 1) {
-                this.searchResults.value.folders = data.folders;
-            } else {
-                this.searchResults.value.folders = [
-                    ...this.searchResults.value.folders,
-                    ...data.folders
-                ];
-            }
-
-            this.searchResults.value.hasMoreFolders = data.hasMore;
-            
-            if (!data.hasMore && this.searchResults.value.folders.length === 0) {
-                await this.searchFiles(query);
-            }
         } catch (error) {
             console.error('Search error:', error);
+            this.searchStore.setSearching(false);
         }
     }
 
-    private async searchFiles(query: string) {
-        try {
-            const response = await fetch(
-                `http://localhost:3000/api/v1/search?` + 
-                new URLSearchParams({
-                    query,
-                    folderId: this.currentFolderId?.toString() || '0',
-                    page: this.page.value.toString(),
-                    type: 'file'
-                })
-            );
-
-            const data = await response.json();
-            
-            if (this.page.value === 1) {
-                this.searchResults.value.files = data.files;
-            } else {
-                this.searchResults.value.files = [
-                    ...this.searchResults.value.files,
-                    ...data.files
-                ];
-            }
-
-            this.searchResults.value.hasMoreFiles = data.hasMore;
-        } catch (error) {
-            console.error('Search error:', error);
-        }
-	}
-
     get isLoading() {
-        return this.isSearching;
+        return this.searchStore.getIsSearching;
+    }
+
+    get searchResults() {
+        return this.searchStore.getSearchResults;
+    }
+
+    get hasMoreResults() {
+        return this.searchStore.getHasMore;
+    }
+
+    resetSearch() {
+        this.searchStore.resetSearch();
     }
 }

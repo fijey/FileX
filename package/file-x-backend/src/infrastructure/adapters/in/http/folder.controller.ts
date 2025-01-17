@@ -25,15 +25,15 @@ export class FolderController {
                     const pagination = query.page && query.limit ? {
                         page: Number(query.page),
                         limit: Number(query.limit)
-                    } : undefined;
+                    } : { page: 1, limit: 10 };
 
-                    const result = await this.getFoldersUseCase.execute(folder, pagination);
+                    const result = await this.getFoldersUseCase.execute(folder, pagination, query.search || '');
                     
                     return ResponseFormatter.success(200, 'Folders fetched successfully', {
                         data: result.data,
                         total: result.total,
                         hasMore: pagination ? 
-                            result.total > (pagination.page * pagination.limit) : 
+                            (result.total || 0) > (pagination.page * pagination.limit) : 
                             false
                     });
                 } catch (error) {

@@ -6,7 +6,7 @@ import { PaginationOptions } from "../../../domain/types/pagination-options";
 export class GetFolderUseCase {
     constructor(private readonly folderRepository: FolderRepository) {}
 
-    async execute(query: GetFolderQuery, pagination:PaginationOptions): Promise<Folder[]> {
-        return this.folderRepository.findByParentId(query, pagination);
+    async execute(query: GetFolderQuery, pagination:PaginationOptions, search: string): Promise<{ data: Folder[], total?: number }> {
+        return this.folderRepository.findByParentId(query, pagination, search);
     }
 }
