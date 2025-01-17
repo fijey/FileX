@@ -18,16 +18,27 @@ export class FolderController {
          app
             .get('/api/v1/folders', async ({ query }) => {
                 try {
-                    const folder : GetFolderQuery = {
+                    const folder: GetFolderQuery = {
                         parent_id: query.parent_id ? Number(query.parent_id) : null
-                    }
-    
-                    const folders = await this.getFoldersUseCase.execute(folder);
-                    console.log(folders);
-                    return ResponseFormatter.success(200, 'Folders fetched successfully', folders)
+                    };
+
+                    const pagination = query.page && query.limit ? {
+                        page: Number(query.page),
+                        limit: Number(query.limit)
+                    } : undefined;
+
+                    const result = await this.getFoldersUseCase.execute(folder, pagination);
+                    
+                    return ResponseFormatter.success(200, 'Folders fetched successfully', {
+                        data: result.data,
+                        total: result.total,
+                        hasMore: pagination ? 
+                            result.total > (pagination.page * pagination.limit) : 
+                            false
+                    });
                 } catch (error) {
                     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-                    return ResponseFormatter.error(500, 'Internal server error', errorMessage)
+                    return ResponseFormatter.error(500, 'Internal server error', errorMessage);
                 }
             })
             .post('/api/v1/folders', async ({ body }: { body: CreateFolderCommand }) => {
