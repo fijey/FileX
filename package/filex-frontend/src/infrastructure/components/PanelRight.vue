@@ -6,7 +6,9 @@
     <div class="grid grid-cols-3 gap-4">
         <div v-for="item in [...displayedFolders, ...displayedFiles]" 
             :key="item.id" 
-            class="flex flex-col items-center p-4 rounded-lg hover:bg-white/20 cursor-pointer">
+            class="flex flex-col items-center p-4 rounded-lg hover:bg-white/20 cursor-pointer"
+            @click="handleItemClick(item)">
+			
             <div class="icon mb-2">
                 <Folder v-if="'parent_id' in item" color="white" fill="white" :size="40" />
                 <File v-else color="grey" fill="grey" :size="40" />
@@ -71,6 +73,12 @@ export default defineComponent({
 			}
 		};
 
+		const handleItemClick = (item: FolderModel | FileModel) => {
+            if ('parent_id' in item) { // Check if item is a folder
+                panelLeft.selectFolder(item.id, item.name);
+            }
+        };
+
 		return {
 			displayedFolders,
 			displayedFiles,
@@ -78,7 +86,8 @@ export default defineComponent({
 			folderName,
 			showMoreButton,
 			handleLoadMore,
-			hasMoreFolders
+			hasMoreFolders,
+			handleItemClick
 		};
 	},
 })
