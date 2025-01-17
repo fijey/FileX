@@ -1,4 +1,4 @@
-# File Explorer Application
+# FileX Explorer Application
 
 A modern web-based file explorer built with Vue 3 and Bun, featuring a dual-panel interface similar to Windows Explorer.
 
