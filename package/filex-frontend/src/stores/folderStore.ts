@@ -7,6 +7,7 @@ export const useFolderStore = defineStore('folder', {
     folders: [] as FolderEntity[],
     isOpen: {} as Record<string, boolean>,
     folderCache: new Map<number, CacheEntry>(),
+    currentFolderActive: null as null | number,
   }),
   actions: {
     setFolders(folders: FolderEntity[]) {
@@ -50,9 +51,14 @@ export const useFolderStore = defineStore('folder', {
       }
       return [];
     },
+    setCurrentFolderActive(folderId: number) {
+      this.currentFolderActive = folderId;
+    }
   },
   getters: {
     getFolders: (state) => state.folders,
     isFolderOpen: (state) => (folderId: number) => state.isOpen[folderId] || false,
+    getCurrentActiveFolder: (state) => state.currentFolderActive != null ? state.folderCache.get(state.currentFolderActive)?.data || [] : [],
+    getFolderFromCache: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
   },
 });

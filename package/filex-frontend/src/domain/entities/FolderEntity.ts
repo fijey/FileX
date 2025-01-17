@@ -4,6 +4,7 @@ export class FolderEntity {
     id!: number;
 	name!: string;
 	parentId!: number | null;
+	isActive?: boolean = false;
 	children!: FolderModel[];
 	hasChildren!: boolean;
     constructor(

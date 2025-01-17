@@ -17,9 +17,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Folder } from 'lucide-vue-next'
-import PanelLeft from '@/presentation/components/PanelLeft.vue'
-import PanelRight from '@/presentation/components/PanelRight.vue'
+import PanelLeft from './presentation/components/PanelLeft.vue'
+import PanelRight from './presentation/components/PanelRight.vue'
 
 const currentFolder = ref(null)
 </script>
