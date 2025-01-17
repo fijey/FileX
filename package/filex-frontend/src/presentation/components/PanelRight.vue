@@ -4,14 +4,15 @@
     </h2>
 
     <div class="grid grid-cols-3 gap-4">
-        <div v-for="folder in displayedFolders" 
-            :key="folder.id" 
+        <div v-for="item in [...displayedFolders, ...displayedFiles]" 
+            :key="item.id" 
             class="flex flex-col items-center p-4 rounded-lg hover:bg-white/20 cursor-pointer">
             <div class="icon mb-2">
-                <Folder color="white" fill="white" :size="40" />
+                <Folder v-if="'parent_id' in item" color="white" fill="white" :size="40" />
+                <File v-else color="blue" fill="blue" :size="40" />
             </div>
-            <div class="folder-name">
-                {{ folder.name }}
+            <div>
+                {{ item.name }}
             </div>
         </div>
     </div>
@@ -27,9 +28,9 @@
 </template>
 
 <script lang="ts">
-import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
+import { Folder, ChevronUp, ChevronDown, File } from 'lucide-vue-next';
 import { defineComponent, computed } from 'vue';
-import { FolderBloc } from '../bloc/FolderBloc';
+import { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 import { PanelRightBloc } from '../bloc/PanelRightBloc';
 import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
 import { FolderRepository } from '../../data/repository/FolderRepository';
@@ -39,32 +40,38 @@ export default defineComponent({
 	components: {
 		Folder,
 		ChevronUp,
-		ChevronDown
+		ChevronDown,
+		File
 	},
 	setup() {
-		const folderbloc = new FolderBloc(new GetFolderUseCase(new FolderRepository()));
+		const panelLeft = new PanelLeftBloc(new GetFolderUseCase(new FolderRepository()));
 		const panelRightBloc = new PanelRightBloc();
 		
 		const isSearchActive = computed(() => panelRightBloc.isSearchActive);
 		const displayedFolders = computed(() => 
-			isSearchActive.value ? panelRightBloc.searchResults : folderbloc.folderActive
+			isSearchActive.value ? panelRightBloc.searchResults : panelLeft.folderActive
+		);
+
+		const displayedFiles = computed(() => 
+			isSearchActive.value ? panelRightBloc.searchResults : panelLeft.fileActive
 		);
 		const folderName = computed(() => panelRightBloc.folderName);
 		const showMoreButton = computed(() => 
 			(isSearchActive.value && panelRightBloc.hasMore) || 
-			(!isSearchActive.value && folderbloc.hasMore)
+			(!isSearchActive.value && panelLeft.hasMore)
 		);
 
 		const handleLoadMore = async () => {
 			if (isSearchActive.value) {
 				await panelRightBloc.loadMore();
 			} else {
-				await folderbloc.loadMore();
+				await panelLeft.loadMore();
 			}
 		};
 
 		return {
 			displayedFolders,
+			displayedFiles,
 			isSearchActive,
 			folderName,
 			showMoreButton,

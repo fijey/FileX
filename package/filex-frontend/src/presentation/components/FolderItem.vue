@@ -38,7 +38,7 @@
 import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
 import { inject, defineComponent, type PropType } from 'vue';
 import { FolderEntity } from '../../domain/entities/FolderEntity';
-import type { FolderBloc } from '../bloc/FolderBloc';
+import type { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 
 export default defineComponent({
 	name: 'FolderItem',
@@ -58,12 +58,12 @@ export default defineComponent({
 		}
 	},
 	setup(props) {
-		const folderBloc = inject('folderBloc') as FolderBloc;
+		const panelLeftBloc = inject('panelLeftBloc') as PanelLeftBloc;
 
 		return {
-			selectFolder: (folderId: number, folderName: string) => folderBloc.selectFolder(folderId, folderName),
-			toggleFolderExpansion: (folderId: number, folderName: string) => folderBloc.toggleFolderExpansion(folderId, folderName),
-			isFolderExpanded: (folderId: number) => folderBloc.isFolderExpanded(folderId),
+			selectFolder: (folderId: number, folderName: string) => panelLeftBloc.selectFolder(folderId, folderName),
+			toggleFolderExpansion: (folderId: number, folderName: string) => panelLeftBloc.toggleFolderExpansion(folderId, folderName),
+			isFolderExpanded: (folderId: number) => panelLeftBloc.isFolderExpanded(folderId),
 			ChevronUp,
 			ChevronDown
 		};

@@ -1,14 +1,14 @@
 import { ref } from "vue";
 import { useSearchStore } from "../stores/searchStore";
-import { useFolderStore } from "../stores/folderStore";
+import { useGlobalStore } from "../stores/globalStore";
 import { SearchBloc } from "./SearchBloc";
 
 export class PanelRightBloc {
     private searchStore = useSearchStore();
-    private folderStore = useFolderStore();
+    private globalStore = useGlobalStore();
 
     get folderName() {
-        const selectedFolder = this.folderStore.selectedFolderContents;
+        const selectedFolder = this.globalStore.selectedFolderContents;
         return selectedFolder?.name || 'Root Folder';
     }
 

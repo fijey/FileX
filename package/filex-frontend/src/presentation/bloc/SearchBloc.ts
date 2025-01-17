@@ -1,17 +1,17 @@
-import { useFolderStore } from '../stores/folderStore';
+import { useGlobalStore } from '../stores/globalStore';
 import { useSearchStore } from '../stores/searchStore';
 
 export class SearchBloc {
-    private folderStore = useFolderStore();
+    private globalStore = useGlobalStore();
     private searchStore = useSearchStore();
     
     get folderName() {
-        const selectedFolder = this.folderStore.selectedFolderContents;
+        const selectedFolder = this.globalStore.selectedFolderContents;
         return selectedFolder?.name || 'Root Folder';
     }
 
     get currentFolderId() {
-        return this.folderStore.selectedFolderId;
+        return this.globalStore.selectedFolderId;
     }
 
     async search(query: string) {

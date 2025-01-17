@@ -2,14 +2,28 @@ import { defineStore } from 'pinia';
 import { FolderEntity } from '../../domain/entities/FolderEntity';
 import type { CacheEntry } from '../../domain/types/CacheEntry';
 import type { FolderState } from '../../domain/types/FolderStore';
+import type { FileEntity } from '../../domain/entities/FileEntity';
 
+// Add FileCache type
+interface FileCache {
+  data: FileEntity[];
+  hasMore: boolean;
+  page: number;
+}
 
-export const useFolderStore = defineStore('folder', {
-  state: () : FolderState => ({
+export const useGlobalStore = defineStore('folder', {
+  state: () : FolderState & { 
+    fileResults: FileCache
+  } => ({
     folders: [] as FolderEntity[],
     openFolderIds: {} as Record<number, boolean>,
     folderCache: new Map<number, CacheEntry>(),
     selectedFolderId: null as null | number,
+    fileResults: {
+      data: [],
+      hasMore: false,
+      page: 1
+    }
   }),
   actions: {
     setFolders(folders: FolderEntity[]) {
@@ -71,6 +85,38 @@ export const useFolderStore = defineStore('folder', {
     setCurrentFolderActive(folderId: number) {
       this.selectedFolderId = folderId;
     },
+
+    // Add file actions
+    resetFiles() {
+      this.fileResults = {
+        data: [],
+        hasMore: false,
+        page: 1
+      };
+    },
+
+    setFiles(files: FileEntity[], hasMore: boolean) {
+      if (this.fileResults.page === 1) {
+        this.fileResults.data = files;
+      } else {
+        this.fileResults.data = [...this.fileResults.data, ...files];
+      }
+      this.fileResults.hasMore = hasMore;
+    },
+
+    appendFiles(files: FileEntity[], hasMore: boolean) {
+      this.fileResults.data = [...this.fileResults.data, ...files];
+      this.fileResults.hasMore = hasMore;
+      this.fileResults.page++;
+    },
+
+    setFilePage(page: number) {
+      this.fileResults.page = page;
+    },
+
+    updateCacheFiles(folderId: number, updatedCache: CacheEntry) {
+      this.folderCache.set(folderId, updatedCache);
+    }
   },
   getters: {
     getFolders: (state) => state.folders,
@@ -80,6 +126,11 @@ export const useFolderStore = defineStore('folder', {
       hasMore: false
     },
     getFolderContents: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
+
+    // Add file getters
+    getFiles: (state) => state.fileResults.data,
+    hasMoreFiles: (state) => state.fileResults.hasMore,
+    getCurrentFilePage: (state) => state.fileResults.page
   },
 });
 
