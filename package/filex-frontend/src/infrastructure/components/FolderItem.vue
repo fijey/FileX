@@ -1,6 +1,7 @@
 <template>
 <div :style="`margin-left: ${depth * 1}rem`">
   <div 
+    @click="selectFolder(folder.id, folder.name)"
     class="rounded-lg p-4 flex items-center hover:bg-white/20 cursor-pointer select-none"
     :class="{'bg-white/30': isActiveFolder(folder.id)}"
   >
@@ -19,7 +20,6 @@
     </div>
     <div 
       class="flex items-center"
-      @click="selectFolder(folder.id, folder.name)"
     >
       <div class="icon">
         <Folder 

@@ -23,6 +23,7 @@
             </div>
         </div>
     </div>
+    <Loading :show="isLoading" />
 </template>
 
 <script lang="ts">
@@ -38,6 +39,7 @@ import { CacheService } from '../../application/services/CacheService';
 import { FileRepository } from '../../application/repository/FileRepository';
 import { ToggleFolderUseCase } from '../../application/use-cases/folder/ToggleFolderUseCase';
 import { LoadFilesUseCase } from '../../application/use-cases/folder/LoadFilesUseCase';
+import Loading from './ui/Loading.vue';
 
 export default defineComponent({
     name: 'PanelRight',
@@ -45,7 +47,8 @@ export default defineComponent({
         Folder,
         ChevronUp,
         ChevronDown,
-        File
+        File,
+        Loading
     },
     setup() {
         const cacheService = new CacheService();
@@ -114,7 +117,8 @@ export default defineComponent({
             folderName,
             showMoreButton,
             handleScroll,
-            handleItemClick
+            handleItemClick,
+            isLoading
         };
     },
 })
