@@ -14,20 +14,35 @@ export class FileController {
         private readonly UpdateFileCommand: UpdateFileUseCase
     ) {}
 
-    register(app: Elysia) :  Elysia {
+    register(app: Elysia) : Elysia {
          app
             .get('/api/v1/files', async ({ query }) => {
                 try {
-                    const file : GetFileQuery = {
+                    const file: GetFileQuery = {
                         folder_id: query.folder_id ? Number(query.folder_id) : null
-                    }
-    
-                    const files = await this.getFilesUseCase.execute(file);
+                    };
 
-                    return ResponseFormatter.success(200, 'Files fetched successfully', files)
+                    const pagination = query.page && query.limit ? {
+                        page: Number(query.page),
+                        limit: Number(query.limit)
+                    } : { page: 1, limit: 10 };
+
+                    const result = await this.getFilesUseCase.execute(
+                        file, 
+                        pagination, 
+                        query.search || ''
+                    );
+                    
+                    return ResponseFormatter.success(200, 'Files fetched successfully', {
+                        data: result.data,
+                        total: result.total,
+                        hasMore: pagination ? 
+                            (result.total || 0) > (pagination.page * pagination.limit) : 
+                            false
+                    });
                 } catch (error) {
                     const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-                    return ResponseFormatter.error(500, 'Internal server error', errorMessage)
+                    return ResponseFormatter.error(500, 'Internal server error', errorMessage);
                 }
             })
             .post('/api/v1/files', async ({ body }: { body: CreateFileCommand }) => {

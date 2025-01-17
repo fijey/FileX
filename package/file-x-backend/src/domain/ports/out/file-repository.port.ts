@@ -8,7 +8,7 @@ export interface UpdateFileRepository extends Pick<FileAttributes, 'id' | 'name'
 
 
 export interface FileRepository {
-    findByFolderId(file: GetFileRepository): Promise<File[]>;
+    findByFolderId(file: GetFileRepository, pagination?: PaginationOptions, searchQuery?: string): Promise<{ data: File[], total?: number }>;
     create(file: CreateFileRepository): Promise<File>;
     delete(file: DeleteFileRepository): Promise<string>;
     update(file: UpdateFileRepository): Promise<File>;

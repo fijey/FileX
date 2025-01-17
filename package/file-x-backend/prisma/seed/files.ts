@@ -21,7 +21,7 @@ async function main() {
   }
 
   // Constants for file generation
-  const TOTAL_FILES = 1000; // Total files to create
+  const TOTAL_FILES = 10000; // Total files to create
   let fileCount = 0;
 
   // Create files
