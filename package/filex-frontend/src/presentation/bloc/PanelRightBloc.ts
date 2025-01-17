@@ -1,6 +1,6 @@
 import { ref } from "vue";
-import { useSearchStore } from "../../stores/searchStore";
-import { useFolderStore } from "../../stores/folderStore";
+import { useSearchStore } from "../stores/searchStore";
+import { useFolderStore } from "../stores/folderStore";
 import { SearchBloc } from "./SearchBloc";
 
 export class PanelRightBloc {

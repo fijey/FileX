@@ -1,9 +1,9 @@
 import { FolderEntity } from '../../domain/entities/FolderEntity';
 import type { IFolderBloc } from '../../domain/interfaces/IFolderBloc';
 import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
-import { useFolderStore } from '../../stores/folderStore';
+import { useFolderStore } from '../stores/folderStore';
 import { toRaw } from '../../domain/utils/reactivity';
-import { useSearchStore } from '../../stores/searchStore';
+import { useSearchStore } from '../stores/searchStore';
 import { ref } from 'vue';
 
 export class FolderBloc implements IFolderBloc {

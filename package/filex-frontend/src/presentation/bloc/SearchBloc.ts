@@ -1,5 +1,5 @@
-import { useFolderStore } from '../../stores/folderStore';
-import { useSearchStore } from '../../stores/searchStore';
+import { useFolderStore } from '../stores/folderStore';
+import { useSearchStore } from '../stores/searchStore';
 
 export class SearchBloc {
     private folderStore = useFolderStore();
