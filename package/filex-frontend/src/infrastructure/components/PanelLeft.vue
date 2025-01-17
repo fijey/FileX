@@ -12,8 +12,8 @@
 import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
 import { defineComponent, ref, onMounted, computed, provide } from 'vue';
 import { PanelLeftBloc } from '../bloc/PanelLeftBloc';
-import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
-import { FolderRepository } from '../../data/repository/FolderRepository';
+import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
+import { FolderRepository } from '../../application/repository/FolderRepository';
 import FolderItem from './FolderItem.vue';
 
 export default defineComponent({

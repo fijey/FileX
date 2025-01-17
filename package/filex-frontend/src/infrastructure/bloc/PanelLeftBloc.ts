@@ -1,11 +1,11 @@
-import { FolderEntity } from '../../domain/entities/FolderEntity';
+import { FolderModel } from '../../domain/models/FolderModel';
 import type { IPanelLeftBloc } from '../../domain/interfaces/IPanelLeftBloc';
-import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
+import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
 import { useGlobalStore } from '../stores/globalStore';
 import { toRaw } from '../../domain/utils/reactivity';
 import { useSearchStore } from '../stores/searchStore';
 import { ref } from 'vue';
-import type { FileEntity } from '../../domain/entities/FileEntity';
+import type { FileModel } from '../../domain/models/FileModel';
 
 export class PanelLeftBloc implements IPanelLeftBloc {
   private store = useGlobalStore();
@@ -147,15 +147,15 @@ private async loadMoreFiles() {
     return this.store.selectedFolderContents?.hasMore || false;
   }
 
- get folderActive(): FolderEntity[] {
+ get folderActive(): FolderModel[] {
     return toRaw(this.store.selectedFolderContents.data);
   }
 
-  get fileActive(): FileEntity[] {
+  get fileActive(): FileModel[] {
     return toRaw(this.store.selectedFolderContents.files || []);
   }
 
-  get folderList(): FolderEntity[] {
+  get folderList(): FolderModel[] {
     return this.store.getFolders;
   }
 }

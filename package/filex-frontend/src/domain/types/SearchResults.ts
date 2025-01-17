@@ -1,5 +1,5 @@
 export interface SearchResults {
-    folders: FolderEntity[];
+    folders: FolderModel[];
     files: any[];
     hasMoreFolders: boolean;
     hasMoreFiles: boolean;

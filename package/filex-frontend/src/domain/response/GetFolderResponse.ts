@@ -1,9 +1,7 @@
-import type { FolderModel } from '../../data/models/FolderModel';
+import type { FolderModel } from '../models/FolderModel';
 
 export interface GetFolderResponse {
-    data: {
-        data: FolderModel[];
-        total?: number;
-        hasMore: boolean;
-    }
+    data: FolderModel[];
+    total?: number;
+    hasMore: boolean;
 }

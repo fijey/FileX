@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Folder, ChevronUp, ChevronDown } from 'lucide-vue-next';
 import { inject, defineComponent, type PropType } from 'vue';
-import { FolderEntity } from '../../domain/entities/FolderEntity';
+import { FolderModel } from '../../domain/models/FolderModel';
 import type { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 
 export default defineComponent({
@@ -49,7 +49,7 @@ export default defineComponent({
 	},
 	props: {
 		folder: {
-			type: Object as PropType<FolderEntity>,
+			type: Object as PropType<FolderModel>,
 			required: true
 		},
 		depth: {

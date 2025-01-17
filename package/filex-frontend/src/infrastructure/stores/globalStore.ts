@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { FolderEntity } from '../../domain/entities/FolderEntity';
+import { FolderModel } from '../../domain/models/FolderModel';
 import type { CacheEntry } from '../../domain/types/CacheEntry';
 import type { FolderState } from '../../domain/types/FolderStore';
-import type { FileEntity } from '../../domain/entities/FileEntity';
+import type { FileModel } from '../../domain/models/FileModel';
 
 // Add FileCache type
 interface FileCache {
-  data: FileEntity[];
+  data: FileModel[];
   hasMore: boolean;
   page: number;
 }
@@ -15,7 +15,7 @@ export const useGlobalStore = defineStore('folder', {
   state: () : FolderState & { 
     fileResults: FileCache
   } => ({
-    folders: [] as FolderEntity[],
+    folders: [] as FolderModel[],
     openFolderIds: {} as Record<number, boolean>,
     folderCache: new Map<number, CacheEntry>(),
     selectedFolderId: null as null | number,
@@ -26,14 +26,14 @@ export const useGlobalStore = defineStore('folder', {
     }
   }),
   actions: {
-    setFolders(folders: FolderEntity[]) {
+    setFolders(folders: FolderModel[]) {
       this.folders = folders;
     },
     toggleFolderExpansion(folderId: number) {
       this.openFolderIds[folderId] = !this.openFolderIds[folderId];
     },
-    setFolderChildren(folderId: number, folderName: string, children: FolderEntity[], ttl: number = 60000, hasMore: boolean = false, shouldAppend: boolean = false) {
-      const updateFoldersRecursively = (folders: FolderEntity[]): FolderEntity[] => {
+    setFolderChildren(folderId: number, folderName: string, children: FolderModel[], ttl: number = 60000, hasMore: boolean = false, shouldAppend: boolean = false) {
+      const updateFoldersRecursively = (folders: FolderModel[]): FolderModel[] => {
         return folders.map(folder => {
           if (folder.id === folderId) {
             // If shouldAppend is true and there are existing children, append
@@ -71,7 +71,7 @@ export const useGlobalStore = defineStore('folder', {
         hasMore 
       });
     },
-    fetchFolderChildren(folderId: number): FolderEntity[] {
+    fetchFolderChildren(folderId: number): FolderModel[] {
       const cacheEntry = this.folderCache.get(folderId);
       if (cacheEntry) {
         if (cacheEntry.expiry > Date.now()) {
@@ -95,7 +95,7 @@ export const useGlobalStore = defineStore('folder', {
       };
     },
 
-    setFiles(files: FileEntity[], hasMore: boolean) {
+    setFiles(files: FileModel[], hasMore: boolean) {
       if (this.fileResults.page === 1) {
         this.fileResults.data = files;
       } else {
@@ -104,7 +104,7 @@ export const useGlobalStore = defineStore('folder', {
       this.fileResults.hasMore = hasMore;
     },
 
-    appendFiles(files: FileEntity[], hasMore: boolean) {
+    appendFiles(files: FileModel[], hasMore: boolean) {
       this.fileResults.data = [...this.fileResults.data, ...files];
       this.fileResults.hasMore = hasMore;
       this.fileResults.page++;

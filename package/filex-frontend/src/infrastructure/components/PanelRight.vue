@@ -32,8 +32,8 @@ import { Folder, ChevronUp, ChevronDown, File } from 'lucide-vue-next';
 import { defineComponent, computed } from 'vue';
 import { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 import { PanelRightBloc } from '../bloc/PanelRightBloc';
-import { GetFolderUseCase } from '../../domain/use-cases/folder/GetFolderUseCase';
-import { FolderRepository } from '../../data/repository/FolderRepository';
+import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
+import { FolderRepository } from '../../application/repository/FolderRepository';
 
 export default defineComponent({
 	name: 'PanelRight',

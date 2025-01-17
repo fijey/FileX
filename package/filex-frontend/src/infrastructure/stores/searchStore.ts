@@ -1,14 +1,14 @@
 import { defineStore } from 'pinia';
-import { FolderEntity } from '../../domain/entities/FolderEntity';
-import type { FileEntity } from '../../domain/entities/FileEntity';
+import type { FileModel } from '../../domain/models/FileModel';
+import type { FolderModel } from '../../domain/models/FolderModel';
 
 interface SearchState {
   page: number;
   filePage: number;
   searchQuery: string;
   results: {
-    files: FileEntity[];
-    folders: FolderEntity[];
+    files: FileModel[];
+    folders: FolderModel[];
     hasMoreFolders: boolean;
     hasMoreFiles: boolean;
     isSearching: boolean;
@@ -30,7 +30,7 @@ export const useSearchStore = defineStore('search', {
   }),
 
   actions: {
-    setSearchResults(folders: FolderEntity[], hasMore: boolean) {
+    setSearchResults(folders: FolderModel[], hasMore: boolean) {
       if (this.page === 1) {
         this.results.folders = folders;
       } else {
@@ -39,7 +39,7 @@ export const useSearchStore = defineStore('search', {
       this.results.hasMoreFolders = hasMore;
     },
 
-    setFileResults(files: FileEntity[], hasMore: boolean) {
+    setFileResults(files: FileModel[], hasMore: boolean) {
       if (this.filePage === 1) {
         this.results.files = files;
       } else {

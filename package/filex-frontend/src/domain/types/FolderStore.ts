@@ -1,8 +1,8 @@
-import type { FolderEntity } from "../entities/FolderEntity";
+import type { FolderModel } from "../models/FolderModel";
 import type { CacheEntry } from "./CacheEntry";
 
 export interface FolderState {
-    folders: FolderEntity[];
+    folders: FolderModel[];
     openFolderIds: Record<number, boolean>;
     folderCache: Map<number, CacheEntry>;
     selectedFolderId: number | null;

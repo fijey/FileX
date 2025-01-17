@@ -1,6 +1,6 @@
-import Search from '../../src/presentation/components/ui/Search.vue'
+import Search from '../../src/infrastructure/components/ui/Search.vue'
 import { createPinia, setActivePinia } from 'pinia'
-import { SearchBloc } from '../../src/presentation/bloc/SearchBloc'
+import { SearchBloc } from '../../src/infrastructure/bloc/SearchBloc'
 
 describe('Search.vue', () => {
     beforeEach(() => {

@@ -26,9 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import PanelLeft from './presentation/components/PanelLeft.vue'
-import PanelRight from './presentation/components/PanelRight.vue'
-import Search from './presentation/components/ui/Search.vue'
+import PanelLeft from './infrastructure/components/PanelLeft.vue'
+import PanelRight from './infrastructure/components/PanelRight.vue'
+import Search from './infrastructure/components/ui/Search.vue'
 </script>
 
 <style scoped>
