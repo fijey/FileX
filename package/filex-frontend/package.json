@@ -17,6 +17,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",
     "css": "^3.0.0",
+    "cypress": "^14.0.0",
     "lucide-vue": "^0.471.0",
     "lucide-vue-next": "^0.471.0",
     "post": "^0.0.1",

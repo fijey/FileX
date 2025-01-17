@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { FolderEntity } from '../domain/entities/FolderEntity';
-import type { CacheEntry } from '../domain/types/CacheEntry';
-import type { FolderState } from '../domain/types/FolderStore';
+import { FolderEntity } from '../../domain/entities/FolderEntity';
+import type { CacheEntry } from '../../domain/types/CacheEntry';
+import type { FolderState } from '../../domain/types/FolderStore';
 
 
 export const useFolderStore = defineStore('folder', {
