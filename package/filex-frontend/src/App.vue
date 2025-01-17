@@ -12,12 +12,12 @@
       </div>
     </header>
     <main class="container mx-auto p-2">
-      <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-3 glass-morphism p-4 rounded-lg">
+      <div class="grid grid-cols-12 gap-4 h-[calc(100vh-120px)]">
+        <div class="col-span-3 glass-morphism p-4 rounded-lg overflow-y-auto">
          <PanelLeft/>
         </div>
         
-        <div class="col-span-9 glass-morphism p-4 rounded-lg">
+        <div class="col-span-9 glass-morphism p-4 rounded-lg overflow-y-auto">
           <PanelRight/>
         </div>
       </div>
@@ -35,9 +35,9 @@ import Search from './presentation/components/ui/Search.vue'
 .glass-morphism {
   background: theme('colors.primary');
   backdrop-filter: blur(10px);
-  border: 1px solid theme('colors.black');
+  border: 1px solid theme('colors.white/10');
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .glass-morphism::before {
