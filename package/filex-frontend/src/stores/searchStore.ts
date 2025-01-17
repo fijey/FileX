@@ -40,6 +40,10 @@ export const useSearchStore = defineStore('search', {
       this.searchQuery = query;
     },
 
+    setCurrentPage(page: number) {
+      this.page = page;
+    },
+
     resetSearch() {
       this.page = 1;
       this.searchQuery = '';

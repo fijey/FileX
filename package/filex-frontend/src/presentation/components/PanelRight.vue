@@ -15,6 +15,15 @@
             </div>
         </div>
     </div>
+
+    <!-- Show More Button -->
+    <div v-if="isSearchActive && hasMore" class="mt-4 flex justify-center">
+        <button 
+            @click="loadMore"
+            class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white">
+            Show More
+        </button>
+    </div>
 </template>
 
 <script lang="ts">
@@ -40,13 +49,19 @@ export default defineComponent({
 		const displayedFolders = computed(() => 
 			isSearchActive.value ? panelRightBloc.searchResults : folderbloc.folderActive
 		);
-
 		const folderName = computed(() => panelRightBloc.folderName);
+		const hasMore = computed(() => panelRightBloc.hasMore);
+
+		const loadMore = async () => {
+			await panelRightBloc.loadMore();
+		};
 
 		return {
 			displayedFolders,
 			isSearchActive,
-			folderName
+			folderName,
+			hasMore,
+			loadMore
 		};
 	},
 })

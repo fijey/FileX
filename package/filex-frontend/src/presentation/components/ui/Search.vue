@@ -33,6 +33,7 @@ export default defineComponent({
 
         const handleSearch = () => {
             if (searchQuery.value.trim()) {
+                searchBloc.resetSearch();
                 searchBloc.search(searchQuery.value);
             }
         };
