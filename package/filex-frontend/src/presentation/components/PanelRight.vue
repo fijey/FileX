@@ -9,7 +9,7 @@
             class="flex flex-col items-center p-4 rounded-lg hover:bg-white/20 cursor-pointer">
             <div class="icon mb-2">
                 <Folder v-if="'parent_id' in item" color="white" fill="white" :size="40" />
-                <File v-else color="blue" fill="blue" :size="40" />
+                <File v-else color="grey" fill="grey" :size="40" />
             </div>
             <div>
                 {{ item.name }}
@@ -53,13 +53,15 @@ export default defineComponent({
 		);
 
 		const displayedFiles = computed(() => 
-			isSearchActive.value ? panelRightBloc.searchResults : panelLeft.fileActive
+			isSearchActive.value ? panelRightBloc.searchResultFiles : panelLeft.fileActive
 		);
 		const folderName = computed(() => panelRightBloc.folderName);
 		const showMoreButton = computed(() => 
 			(isSearchActive.value && panelRightBloc.hasMore) || 
 			(!isSearchActive.value && panelLeft.hasMore)
 		);
+
+		const hasMoreFolders = computed(() => panelRightBloc.loadMore);
 
 		const handleLoadMore = async () => {
 			if (isSearchActive.value) {
@@ -75,7 +77,8 @@ export default defineComponent({
 			isSearchActive,
 			folderName,
 			showMoreButton,
-			handleLoadMore
+			handleLoadMore,
+			hasMoreFolders
 		};
 	},
 })

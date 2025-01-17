@@ -11,18 +11,53 @@ export class PrismaFileRepository implements FileRepository {
     }
 
     async findByFolderId(file: GetFileRepository, pagination?: PaginationOptions, searchQuery?: string): Promise<{ data: File[], total?: number }> {
+        if (searchQuery) {
+            console.log('Searching for files with query:', searchQuery);
+            const recursiveQuery = `
+                WITH RECURSIVE FolderHierarchy AS (
+                    -- Base case: start with the specified folder
+                    SELECT id
+                    FROM Folders 
+                    WHERE id = ${file.folder_id}
+                    
+                    UNION ALL
+                    
+                    -- Recursive case: get all child folders
+                    SELECT f.id
+                    FROM Folders f
+                    INNER JOIN FolderHierarchy fh ON f.parent_id = fh.id
+                )
+            `;
+
+            const files = await this.prisma.$queryRaw<File[]>`
+                ${Prisma.raw(recursiveQuery)}
+                SELECT DISTINCT f.*
+                FROM Files f
+                WHERE f.folder_id IN (SELECT id FROM FolderHierarchy)
+                AND f.name LIKE ${`%${searchQuery}%`}
+                ORDER BY f.name ASC
+                ${pagination ? Prisma.raw(`LIMIT ${pagination.limit} OFFSET ${((pagination.page || 1) - 1) * (pagination.limit || 1)}`) : Prisma.empty}
+            `;
+
+            const total = await this.prisma.$queryRaw<[{ count: number }]>`
+                ${Prisma.raw(recursiveQuery)}
+                SELECT COUNT(DISTINCT f.id) as count
+                FROM Files f
+                WHERE f.folder_id IN (SELECT id FROM FolderHierarchy)
+                AND f.name LIKE ${`%${searchQuery}%`}
+            `;
+
+            return {
+                data: files.map(file => new File(file)),
+                total: Number(total[0].count)
+            };
+        }
+
+        // If no search query, use regular pagination
         const baseQuery = {
-            where: { 
-                folder_id: file.folder_id,
-                ...(searchQuery && {
-                    name: {
-                        contains: searchQuery
-                    }
-                })
-            }
+            where: { folder_id: file.folder_id }
         };
 
-        // If pagination is provided
         if (pagination?.page && pagination?.limit) {
             const skip = (pagination.page - 1) * pagination.limit;
             
@@ -44,7 +79,6 @@ export class PrismaFileRepository implements FileRepository {
             };
         }
 
-        // If no pagination, return all results
         const files = await this.prisma.files.findMany({
             ...baseQuery,
             orderBy: {

@@ -42,6 +42,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
   }
 
   async selectFolder(folderId: number, folderName: string) {
+    this.searchStore.resetSearch();
     // from cache
     if (this.store.getFolderContents(folderId).length > 0) {
         this.store.setCurrentFolderActive(folderId);

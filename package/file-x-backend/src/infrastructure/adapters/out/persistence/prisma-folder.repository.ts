@@ -11,7 +11,6 @@ export class PrismaFolderRepository implements FolderRepository {
 	}
 
 	async findByParentId(folder: GetFolderRepository, pagination?: PaginationOptions, searchQuery?: string): Promise<{ data: Folder[], total?: number }> {
-		// Raw SQL for recursive CTE to get all descendant folders
 		const recursiveQuery = `
 			WITH RECURSIVE FolderHierarchy AS (
 				-- Base case: start with folders at specified parent_id

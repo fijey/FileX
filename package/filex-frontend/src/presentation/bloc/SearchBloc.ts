@@ -39,11 +39,45 @@ export class SearchBloc {
 
             const responseData = await response.json();
             this.searchStore.setSearchResults(responseData.data.data, responseData.data.hasMore);
-            this.searchStore.setSearching(false);
             
+            // If no more folders, start searching files
+            if (!responseData.data.hasMore && responseData.data.data.length === 0) {
+                await this.searchFiles(query);
+            }
+            
+            this.searchStore.setSearching(false);
         } catch (error) {
             console.error('Search error:', error);
             this.searchStore.setSearching(false);
+        }
+    }
+
+    private async searchFiles(query: string) {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/v1/files?` + 
+                new URLSearchParams({
+                    search: query,
+                    folder_id: this.currentFolderId?.toString() || '',
+                    page: this.searchStore.getCurrentFilePage.toString(),
+                    limit: '10'
+                })
+            );
+
+            const responseData = await response.json();
+            this.searchStore.setFileResults(responseData.data.data, responseData.data.hasMore);
+        } catch (error) {
+            console.error('File search error:', error);
+        }
+    }
+
+    async loadMore() {
+        if (this.searchStore.getHasMoreFolders) {
+            this.searchStore.setCurrentPage(this.searchStore.getCurrentPage + 1);
+            await this.searchFolders(this.searchQuery);
+        } else {
+            this.searchStore.setCurrentFilePage(this.searchStore.getCurrentFilePage + 1);
+            await this.searchFiles(this.searchQuery);
         }
     }
 
@@ -65,5 +99,13 @@ export class SearchBloc {
 
     resetSearch() {
         this.searchStore.resetSearch();
+    }
+
+    get fileResults() {
+        return this.searchStore.getFileResults;
+    }
+
+    get hasMoreFiles() {
+        return this.searchStore.getHasMoreFiles;
     }
 }
