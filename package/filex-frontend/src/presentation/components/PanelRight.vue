@@ -1,6 +1,6 @@
 <template class="group">
     <h2 class="text-lg font-semibold mb-4">
-        {{ isSearchActive ? 'Search Results' : folderName }}
+        {{ isSearchActive ? `Search Results in ${folderName}` : folderName }}
     </h2>
 
     <div class="grid grid-cols-3 gap-4">
@@ -17,9 +17,9 @@
     </div>
 
     <!-- Show More Button -->
-    <div v-if="isSearchActive && hasMore" class="mt-4 flex justify-center">
+    <div v-if="showMoreButton" class="mt-4 flex justify-center">
         <button 
-            @click="loadMore"
+            @click="handleLoadMore"
             class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white">
             Show More
         </button>
@@ -50,18 +50,25 @@ export default defineComponent({
 			isSearchActive.value ? panelRightBloc.searchResults : folderbloc.folderActive
 		);
 		const folderName = computed(() => panelRightBloc.folderName);
-		const hasMore = computed(() => panelRightBloc.hasMore);
+		const showMoreButton = computed(() => 
+			(isSearchActive.value && panelRightBloc.hasMore) || 
+			(!isSearchActive.value && folderbloc.hasMore)
+		);
 
-		const loadMore = async () => {
-			await panelRightBloc.loadMore();
+		const handleLoadMore = async () => {
+			if (isSearchActive.value) {
+				await panelRightBloc.loadMore();
+			} else {
+				await folderbloc.loadMore();
+			}
 		};
 
 		return {
 			displayedFolders,
 			isSearchActive,
 			folderName,
-			hasMore,
-			loadMore
+			showMoreButton,
+			handleLoadMore
 		};
 	},
 })

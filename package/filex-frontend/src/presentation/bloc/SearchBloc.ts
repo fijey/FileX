@@ -59,6 +59,10 @@ export class SearchBloc {
         return this.searchStore.getHasMore;
     }
 
+    get searchQuery() {
+        return this.searchStore.getSearchQuery;
+    }
+
     resetSearch() {
         this.searchStore.resetSearch();
     }

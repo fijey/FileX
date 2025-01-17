@@ -18,11 +18,17 @@ export const useFolderStore = defineStore('folder', {
     toggleFolderExpansion(folderId: number) {
       this.openFolderIds[folderId] = !this.openFolderIds[folderId];
     },
-    setFolderChildren(folderId: number, folderName: string, children: FolderEntity[], ttl: number = 60000) {
+    setFolderChildren(folderId: number, folderName: string, children: FolderEntity[], ttl: number = 60000, hasMore: boolean = false, shouldAppend: boolean = false) {
       const updateFoldersRecursively = (folders: FolderEntity[]): FolderEntity[] => {
         return folders.map(folder => {
           if (folder.id === folderId) {
-            return { ...folder, children };
+            // If shouldAppend is true and there are existing children, append
+            // Otherwise replace the children
+            const existingChildren = this.folderCache.get(folderId)?.data || [];
+            const updatedChildren = shouldAppend && existingChildren.length > 0 ? 
+              [...existingChildren, ...children] : 
+              children;
+            return { ...folder, children: updatedChildren };
           }
           if (folder.children?.length) {
             return {
@@ -36,8 +42,20 @@ export const useFolderStore = defineStore('folder', {
 
       this.folders = updateFoldersRecursively(this.folders);
 
+      // Update cache similarly
+      const existingCache = this.folderCache.get(folderId);
+      const existingData = existingCache?.data || [];
+      const updatedData = shouldAppend && existingCache ? 
+        [...existingData, ...children] : 
+        children;
+
       const expiry = Date.now() + ttl;
-      this.folderCache.set(folderId, { name: folderName, data: children, expiry });
+      this.folderCache.set(folderId, { 
+        name: folderName, 
+        data: updatedData, 
+        expiry,
+        hasMore 
+      });
     },
     fetchFolderChildren(folderId: number): FolderEntity[] {
       const cacheEntry = this.folderCache.get(folderId);
@@ -57,7 +75,10 @@ export const useFolderStore = defineStore('folder', {
   getters: {
     getFolders: (state) => state.folders,
     isFolderExpanded: (state) => (folderId: number) => state.openFolderIds[folderId] || false,
-    selectedFolderContents: (state) : CacheEntry => state.selectedFolderId != null ? state.folderCache.get(state.selectedFolderId) as CacheEntry || [] : { name: '', data: [], expiry: 0 },
+    selectedFolderContents: (state) : CacheEntry => state.selectedFolderId != null ? state.folderCache.get(state.selectedFolderId) as CacheEntry || [] : {
+      name: '', data: [], expiry: 0,
+      hasMore: false
+    },
     getFolderContents: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
   },
 });

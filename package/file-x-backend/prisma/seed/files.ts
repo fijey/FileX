@@ -3,52 +3,53 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-    // Clear existing files
-    await prisma.files.deleteMany();
+  console.log("Starting file seeding...");
 
-    // Get all folder IDs to randomly assign files to folders
-    const folders = await prisma.folders.findMany({
-        select: { id: true }
+  // Clear existing files
+  await prisma.files.deleteMany();
+  console.log("Existing files cleared.");
+
+  // Get all folder IDs to assign files
+  const folders = await prisma.folders.findMany({
+    select: { id: true },
+  });
+  const folderIds = folders.map((folder) => folder.id);
+
+  if (folderIds.length === 0) {
+    console.error("No folders found! Ensure folders are seeded before running this script.");
+    return;
+  }
+
+  // Constants for file generation
+  const TOTAL_FILES = 1000; // Total files to create
+  let fileCount = 0;
+
+  // Create files
+  while (fileCount < TOTAL_FILES) {
+    // Randomly assign a folder
+    const folder_id = folderIds[Math.floor(Math.random() * folderIds.length)];
+
+    // Create a unique file name
+    const fileName = `File ${fileCount + 1}`;
+    const file = await prisma.files.create({
+      data: {
+        name: fileName,
+        folder_id: folder_id, // File must belong to a folder
+      },
     });
-    const folderIds = folders.map(folder => folder.id);
 
-    // Constants for file generation
-    const TOTAL_FILES = 100000;
-    let fileCount = 0;
+    fileCount++;
+    console.log(`Created: ${file.name} in Folder ID: ${folder_id}`);
+  }
 
-    // Create files
-    const files = [];
-    while (fileCount < TOTAL_FILES) {
-        // Randomly decide if file should have a parent folder (70% chance)
-        const hasParent = Math.random() < 0.7;
-        const folder_id = hasParent ? folderIds[Math.floor(Math.random() * folderIds.length)] : null;
-
-        // Make file name unique by including the file count
-        const fileName = `File ${fileCount + 1}${hasParent ? ' (In Folder)' : ' (Root)'}`;
-        const file = await prisma.files.create({
-            data: {
-                name: fileName,
-                folder_id: folder_id
-            }
-        });
-
-        files.push(file);
-        fileCount++;
-        console.log(`Created: ${file.name}`);
-    }
-
-    console.log(`Seeding completed! Created ${files.length} files`);
-    // Log statistics
-    const rootFiles = files.filter(f => !f.folder_id).length;
-    console.log(`- Root files: ${rootFiles}`);
-    console.log(`- Files in folders: ${files.length - rootFiles}`);
+  console.log(`Seeding completed! Created ${fileCount} files.`);
 }
 
 main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+  .catch((e) => {
+    console.error("Error occurred during seeding:", e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

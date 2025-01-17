@@ -4,4 +4,5 @@ export interface CacheEntry {
     name: string;
     data: FolderEntity[];
     expiry: number;
+    hasMore: boolean;
 }
