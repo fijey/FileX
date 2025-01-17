@@ -34,6 +34,10 @@ import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUs
 import { FolderRepository } from '../../application/repository/FolderRepository';
 import type { FolderModel } from '../../domain/models/FolderModel';
 import type { FileModel } from '../../domain/models/FileModel';
+import { CacheService } from '../../application/services/CacheService';
+import { FileRepository } from '../../application/repository/FileRepository';
+import { ToggleFolderUseCase } from '../../application/use-cases/folder/ToggleFolderUseCase';
+import { LoadFilesUseCase } from '../../application/use-cases/folder/LoadFilesUseCase';
 
 export default defineComponent({
     name: 'PanelRight',
@@ -44,7 +48,18 @@ export default defineComponent({
         File
     },
     setup() {
-        const panelLeft = new PanelLeftBloc(new GetFolderUseCase(new FolderRepository()));
+        const cacheService = new CacheService();
+		const fileRepository = new FileRepository();
+		const folderRepository = new FolderRepository();
+		const getFoldersUseCase = new GetFolderUseCase(folderRepository);
+		const toggleFolderUseCase = new ToggleFolderUseCase(folderRepository, cacheService);
+		const loadFilesUseCase = new LoadFilesUseCase(fileRepository, cacheService);
+
+        const panelLeft = new PanelLeftBloc(
+			getFoldersUseCase,
+			toggleFolderUseCase,
+			loadFilesUseCase
+		);
         const panelRightBloc = new PanelRightBloc();
         const containerRef = ref<HTMLElement | null>(null);
         const isLoading = ref(false);

@@ -19,13 +19,17 @@
     "pinia": "^2.3.0"
   },
   "scripts": {
-    "dev": "bun --watch package/file-x-backend/index.ts",
+    "backend": "bun --watch package/file-x-backend/index.ts",
+    "frontend": "cd package/filex-frontend && bun dev",
+    "dev": "concurrently \"bun run backend\" \"bun run frontend\"",
+    "db:setup": "cd package/file-x-backend && bun prisma generate && bun prisma db push",
     "seed:folders": "bun package/file-x-backend/prisma/seed/seed.ts",
     "seed:files": "bun package/file-x-backend/prisma/seed/files.ts",
     "seed:all": "bun run seed:folders && bun run seed:files",
     "prepare": "husky install",
     "commitlint": "bunx --bun commitlint --edit",
-    "test": "jest"
+    "test": "jest",
+    "start": "bun run db:setup && bun run seed:all && bun run dev"
   },
   "prisma": {
     "seed": "bun run seed:all"
