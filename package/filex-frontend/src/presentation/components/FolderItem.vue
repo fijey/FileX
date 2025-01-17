@@ -5,9 +5,9 @@
 			<div 
 				v-show="folder.hasChildren" 
 				class="chevron-icon transition-opacity" 
-				@click.stop="toggleFolder(folder.id)">
+				@click.stop="toggleFolderExpansion(folder.id)">
 					<component
-						:is="isFolderOpen(folder.id) ? ChevronUp : ChevronDown" 
+						:is="isFolderExpanded(folder.id) ? ChevronUp : ChevronDown" 
 						color="white" 
 						fill="white"
 						:size="25" 
@@ -25,7 +25,7 @@
 	</div>
 </div>
 <FolderItem
-	v-if="isFolderOpen(folder.id)"
+	v-if="isFolderExpanded(folder.id)"
 	v-for="child in folder.children"
 	:key="child.id"
 	:folder="child"
@@ -62,8 +62,8 @@ export default defineComponent({
 
 		return {
 			selectFolder: (folderId: number) => folderBloc.selectFolder(folderId),
-			toggleFolder: (folderId: number) => folderBloc.toggleFolder(folderId),
-			isFolderOpen: (folderId: number) => folderBloc.isFolderOpen(folderId),
+			toggleFolderExpansion: (folderId: number) => folderBloc.toggleFolderExpansion(folderId),
+			isFolderExpanded: (folderId: number) => folderBloc.isFolderExpanded(folderId),
 			ChevronUp,
 			ChevronDown
 		};

@@ -1,20 +1,26 @@
 import { defineStore } from 'pinia';
 import { FolderEntity } from '../domain/entities/FolderEntity';
 import type { CacheEntry } from '../domain/types/CacheEntry';
+import type { FolderState } from '../domain/types/FolderStore';
+
 
 export const useFolderStore = defineStore('folder', {
-  state: () => ({
+  state: () : FolderState => ({
     folders: [] as FolderEntity[],
-    isOpen: {} as Record<string, boolean>,
+    openFolderIds: {} as Record<number, boolean>,
     folderCache: new Map<number, CacheEntry>(),
-    currentFolderActive: null as null | number,
+    selectedFolderId: null as null | number,
   }),
   actions: {
     setFolders(folders: FolderEntity[]) {
       this.folders = folders;
     },
-    toggleFolder(folderId: number) {
-      this.isOpen[folderId] = !this.isOpen[folderId];
+    toggleFolderExpansion(folderId: number) {
+      this.openFolderIds[folderId] = !this.openFolderIds[folderId];
+    },
+    cacheFolderContents(folderId: number, children: FolderEntity[], ttl: number = 60000) {
+      this.setFolderChildren(folderId, children);
+      this.cacheFolder(folderId, children, ttl);
     },
     setFolderChildren(folderId: number, children: FolderEntity[], ttl: number = 60000) {
       const updateFoldersRecursively = (folders: FolderEntity[]): FolderEntity[] => {
@@ -37,6 +43,7 @@ export const useFolderStore = defineStore('folder', {
       const expiry = Date.now() + ttl;
       this.folderCache.set(folderId, { data: children, expiry });
     },
+    
     clearCache() {
       this.folderCache.clear();
     },
@@ -52,13 +59,26 @@ export const useFolderStore = defineStore('folder', {
       return [];
     },
     setCurrentFolderActive(folderId: number) {
-      this.currentFolderActive = folderId;
+      this.selectedFolderId = folderId;
+    },
+     cacheFolder(folderId: number, data: FolderEntity[], ttl: number) {
+      const expiry = Date.now() + ttl;
+      this.folderCache.set(folderId, { data, expiry });
+    },
+    cleanExpiredCache() {
+      const now = Date.now();
+      for (const [key, value] of this.folderCache.entries()) {
+        if (value.expiry < now) {
+          this.folderCache.delete(key);
+        }
+      }
     }
   },
   getters: {
     getFolders: (state) => state.folders,
-    isFolderOpen: (state) => (folderId: number) => state.isOpen[folderId] || false,
-    getCurrentActiveFolder: (state) => state.currentFolderActive != null ? state.folderCache.get(state.currentFolderActive)?.data || [] : [],
-    getFolderFromCache: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
+    isFolderExpanded: (state) => (folderId: number) => state.openFolderIds[folderId] || false,
+    selectedFolderContents: (state) => state.selectedFolderId != null ? state.folderCache.get(state.selectedFolderId)?.data || [] : [],
+    getFolderContents: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
   },
 });
+

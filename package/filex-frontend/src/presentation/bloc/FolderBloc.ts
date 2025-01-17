@@ -15,10 +15,10 @@ export class FolderBloc implements IFolderBloc {
     this.store.setFolderChildren(0, result);
   }
 
-  async toggleFolder(folderId: number) {
-    this.store.toggleFolder(folderId);
+  async toggleFolderExpansion(folderId: number) {
+    this.store.toggleFolderExpansion(folderId);
 
-    if (this.isFolderOpen(folderId)) {
+    if (this.isFolderExpanded(folderId)) {
       const cachedData = this.store.fetchFolderChildren(folderId);
       if (cachedData.length > 0) {
         this.store.setFolderChildren(folderId, cachedData);
@@ -29,13 +29,13 @@ export class FolderBloc implements IFolderBloc {
     }
   }
 
-  isFolderOpen(folderId: number): boolean {
-    return this.store.isFolderOpen(folderId);
+  isFolderExpanded(folderId: number): boolean {
+    return this.store.isFolderExpanded(folderId);
   }
 
   async selectFolder(folderId: number) {
-    if (this.store.getFolderFromCache(folderId).length > 0) {
-      console.log('From Cache', this.store.getFolderFromCache(folderId));
+    if (this.store.getFolderContents(folderId).length > 0) {
+      console.log('From Cache', this.store.getFolderContents(folderId));
       this.store.setCurrentFolderActive(folderId);
     } else {
       console.log('From API', folderId);
@@ -48,7 +48,7 @@ export class FolderBloc implements IFolderBloc {
   }
 
  get folderActive(): FolderEntity[] {
-    return toRaw(this.store.getCurrentActiveFolder);
+    return toRaw(this.store.selectedFolderContents);
   }
 
   get folderList(): FolderEntity[] {
