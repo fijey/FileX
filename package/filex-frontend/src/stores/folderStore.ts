@@ -18,11 +18,7 @@ export const useFolderStore = defineStore('folder', {
     toggleFolderExpansion(folderId: number) {
       this.openFolderIds[folderId] = !this.openFolderIds[folderId];
     },
-    cacheFolderContents(folderId: number, children: FolderEntity[], ttl: number = 60000) {
-      this.setFolderChildren(folderId, children);
-      this.cacheFolder(folderId, children, ttl);
-    },
-    setFolderChildren(folderId: number, children: FolderEntity[], ttl: number = 60000) {
+    setFolderChildren(folderId: number, folderName: string, children: FolderEntity[], ttl: number = 60000) {
       const updateFoldersRecursively = (folders: FolderEntity[]): FolderEntity[] => {
         return folders.map(folder => {
           if (folder.id === folderId) {
@@ -41,11 +37,7 @@ export const useFolderStore = defineStore('folder', {
       this.folders = updateFoldersRecursively(this.folders);
 
       const expiry = Date.now() + ttl;
-      this.folderCache.set(folderId, { data: children, expiry });
-    },
-    
-    clearCache() {
-      this.folderCache.clear();
+      this.folderCache.set(folderId, { name: folderName, data: children, expiry });
     },
     fetchFolderChildren(folderId: number): FolderEntity[] {
       const cacheEntry = this.folderCache.get(folderId);
@@ -61,23 +53,11 @@ export const useFolderStore = defineStore('folder', {
     setCurrentFolderActive(folderId: number) {
       this.selectedFolderId = folderId;
     },
-     cacheFolder(folderId: number, data: FolderEntity[], ttl: number) {
-      const expiry = Date.now() + ttl;
-      this.folderCache.set(folderId, { data, expiry });
-    },
-    cleanExpiredCache() {
-      const now = Date.now();
-      for (const [key, value] of this.folderCache.entries()) {
-        if (value.expiry < now) {
-          this.folderCache.delete(key);
-        }
-      }
-    }
   },
   getters: {
     getFolders: (state) => state.folders,
     isFolderExpanded: (state) => (folderId: number) => state.openFolderIds[folderId] || false,
-    selectedFolderContents: (state) => state.selectedFolderId != null ? state.folderCache.get(state.selectedFolderId)?.data || [] : [],
+    selectedFolderContents: (state) : CacheEntry => state.selectedFolderId != null ? state.folderCache.get(state.selectedFolderId) as CacheEntry || [] : { name: '', data: [], expiry: 0 },
     getFolderContents: (state) => (folderId: number) => state.folderCache.get(folderId)?.data || [],
   },
 });

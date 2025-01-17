@@ -31,7 +31,7 @@ export default defineComponent({
 		provide('folderBloc', folderBloc);
 
 		onMounted(async () => {
-			const data = await folderBloc.loadFolders();
+			await folderBloc.loadFolders();
 		});
 
 		return {

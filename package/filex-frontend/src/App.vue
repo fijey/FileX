@@ -1,6 +1,16 @@
 <template>
   <div class="min-h-screen bg-black/80 text-white">
-    
+    <header class="container mx-auto p-2">
+      <div class="grid grid-cols-12 gap-4">
+        <div class="col-span-3 glass-morphism p-4 rounded-lg flex items-center justify-center">
+          <h2 class="text-xl font-bold">File-X Eksplorer</h2>
+        </div>
+        
+        <div class="col-span-9 glass-morphism p-4 rounded-lg">
+          <Search />
+        </div>
+      </div>
+    </header>
     <main class="container mx-auto p-2">
       <div class="grid grid-cols-12 gap-4">
         <div class="col-span-3 glass-morphism p-4 rounded-lg">
@@ -16,11 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import PanelLeft from './presentation/components/PanelLeft.vue'
 import PanelRight from './presentation/components/PanelRight.vue'
-
-const currentFolder = ref(null)
+import Search from './presentation/components/ui/Search.vue'
 </script>
 
 <style scoped>

@@ -12,19 +12,19 @@ export class FolderBloc implements IFolderBloc {
   async loadFolders() {
     const result = await this.getFoldersUseCase.execute(null);
     this.store.setFolders(result);
-    this.store.setFolderChildren(0, result);
+    this.store.setFolderChildren(0, '', result);
   }
 
-  async toggleFolderExpansion(folderId: number) {
+  async toggleFolderExpansion(folderId: number, folderName: string) {
     this.store.toggleFolderExpansion(folderId);
 
     if (this.isFolderExpanded(folderId)) {
       const cachedData = this.store.fetchFolderChildren(folderId);
       if (cachedData.length > 0) {
-        this.store.setFolderChildren(folderId, cachedData);
+        this.store.setFolderChildren(folderId, folderName, cachedData);
       } else {
         const children = await this.getFoldersUseCase.execute(folderId);
-        this.store.setFolderChildren(folderId, children, 60000);
+        this.store.setFolderChildren(folderId, folderName, children, 60000);
       }
     }
   }
@@ -33,14 +33,14 @@ export class FolderBloc implements IFolderBloc {
     return this.store.isFolderExpanded(folderId);
   }
 
-  async selectFolder(folderId: number) {
+  async selectFolder(folderId: number, folderName: string) {
     if (this.store.getFolderContents(folderId).length > 0) {
       console.log('From Cache', this.store.getFolderContents(folderId));
       this.store.setCurrentFolderActive(folderId);
     } else {
       console.log('From API', folderId);
       const folder = await this.getFoldersUseCase.execute(folderId);
-      this.store.setFolderChildren(folderId, folder, 60000);
+      this.store.setFolderChildren(folderId, folderName, folder, 60000);
       if (folder.length > 0) {
         this.store.setCurrentFolderActive(folderId);
       }
@@ -48,7 +48,7 @@ export class FolderBloc implements IFolderBloc {
   }
 
  get folderActive(): FolderEntity[] {
-    return toRaw(this.store.selectedFolderContents);
+    return toRaw(this.store.selectedFolderContents.data);
   }
 
   get folderList(): FolderEntity[] {

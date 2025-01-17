@@ -5,7 +5,7 @@
 			<div 
 				v-show="folder.hasChildren" 
 				class="chevron-icon transition-opacity" 
-				@click.stop="toggleFolderExpansion(folder.id)">
+				@click.stop="toggleFolderExpansion(folder.id, folder.name)">
 					<component
 						:is="isFolderExpanded(folder.id) ? ChevronUp : ChevronDown" 
 						color="white" 
@@ -14,7 +14,7 @@
 					/>
 			</div>
 		</div>
-		<div class="flex items-center" @click="selectFolder(folder.id)">
+		<div class="flex items-center" @click="selectFolder(folder.id, folder.name)">
 			<div class="icon">
 				<Folder color="white" fill="white" :size="25" />
 			</div>
@@ -61,8 +61,8 @@ export default defineComponent({
 		const folderBloc = inject('folderBloc') as FolderBloc;
 
 		return {
-			selectFolder: (folderId: number) => folderBloc.selectFolder(folderId),
-			toggleFolderExpansion: (folderId: number) => folderBloc.toggleFolderExpansion(folderId),
+			selectFolder: (folderId: number, folderName: string) => folderBloc.selectFolder(folderId, folderName),
+			toggleFolderExpansion: (folderId: number, folderName: string) => folderBloc.toggleFolderExpansion(folderId, folderName),
 			isFolderExpanded: (folderId: number) => folderBloc.isFolderExpanded(folderId),
 			ChevronUp,
 			ChevronDown
