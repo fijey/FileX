@@ -15,7 +15,7 @@ datasource db {
 
 model Folders {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String 
   parent_id  Int?
   parent     Folders? @relation("ParentChild", fields: [parent_id], references: [id])
   children   Folders[] @relation("ParentChild")
@@ -26,7 +26,7 @@ model Folders {
 
 model Files {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String 
   folder_id  Int?
   folder     Folders? @relation("FolderFiles", fields: [folder_id], references: [id])
 

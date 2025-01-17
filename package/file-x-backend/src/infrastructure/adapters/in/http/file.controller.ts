@@ -25,7 +25,7 @@ export class FileController {
                     const pagination = query.page && query.limit ? {
                         page: Number(query.page),
                         limit: Number(query.limit)
-                    } : { page: 1, limit: 10 };
+                    } : { page: 1, limit: 25 };
 
                     const result = await this.getFilesUseCase.execute(
                         file, 

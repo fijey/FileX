@@ -10,7 +10,7 @@ export class FileRepository implements IFileRepository {
       new URLSearchParams({
         folder_id: folderId?.toString() || '',
         page: pagination.page?.toString() || '1',
-        limit: pagination.limit?.toString() || '10'
+        limit: pagination.limit?.toString() || '25'
       })
     );
 

@@ -43,7 +43,7 @@ export class SearchBloc {
                     search: query,
                     parent_id: this.currentFolderId?.toString() || '',
                     page: this.searchStore.getCurrentPage.toString(),
-                    limit: '10'
+                    limit: '25'
                 })
             );
 
@@ -73,7 +73,7 @@ export class SearchBloc {
                     search: query,
                     folder_id: this.currentFolderId?.toString() || '',
                     page: this.searchStore.getCurrentFilePage.toString(),
-                    limit: '10'
+                    limit: '25'
                 })
             );
 

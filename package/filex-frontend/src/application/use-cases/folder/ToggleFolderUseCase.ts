@@ -20,7 +20,7 @@ export class ToggleFolderUseCase {
 
         const response = await this.folderRepository.getAllFolders(
             folderId, 
-            { page: 1, limit: 10 }
+            { page: 1, limit: 25 }
         );
         await this.cacheService.setFolderChildren(folderId, response.data);
         return {

@@ -10,7 +10,7 @@ export class LoadFilesUseCase {
     async execute(folderId: number, page: number = 1) {
         const response = await this.fileRepository.getAllFiles(folderId, { 
             page, 
-            limit: 10 
+            limit: 25 
         });
 
         await this.cacheService.updateFileCache(folderId, {

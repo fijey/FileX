@@ -22,7 +22,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
   ) {}
 
   async loadFolders() {
-    const result = await this.getFoldersUseCase.execute(null, { page: 1, limit: 10 });
+    const result = await this.getFoldersUseCase.execute(null, { page: 1, limit: 25 });
     this.store.setFolders(result.data);
     this.store.setFolderChildren(0, '', result.data, 60000, result.hasMore);
   }
@@ -47,7 +47,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
         this.store.setCurrentFolderActive(folderId);
     } else {
         // from API
-        const response = await this.getFoldersUseCase.execute(folderId, { page: 1, limit: 10 });
+        const response = await this.getFoldersUseCase.execute(folderId, { page: 1, limit: 25 });
         const { data: folders, hasMore } = response;
         
         this.store.setFolderChildren(folderId, folderName, folders, 60000, hasMore);
@@ -63,7 +63,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
         this.currentPage.value++;
         const result = await this.getFoldersUseCase.execute(
             this.store.selectedFolderId, 
-            { page: this.currentPage.value, limit: 10 }
+            { page: this.currentPage.value, limit: 25 }
         );
         const { data: folders, hasMore } = result;
         
@@ -90,7 +90,7 @@ export class PanelLeftBloc implements IPanelLeftBloc {
 private async loadInitialFiles(folderId: number) {
   try {
       const response = await fetch(
-          `http://localhost:3000/api/v1/files?folder_id=${folderId}&page=1&limit=10`
+          `http://localhost:3000/api/v1/files?folder_id=${folderId}&page=1&limit=25`
       );
       const data = await response.json();
       
@@ -119,7 +119,7 @@ private async loadMoreFiles() {
       const folderId = this.store.selectedFolderId!;
       
       const response = await fetch(
-          `http://localhost:3000/api/v1/files?folder_id=${folderId}&page=${nextPage}&limit=10`
+          `http://localhost:3000/api/v1/files?folder_id=${folderId}&page=${nextPage}&limit=25`
       );
       const data = await response.json();
 

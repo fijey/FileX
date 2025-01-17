@@ -3,12 +3,17 @@
         {{ isSearchActive ? `Search Results in ${folderName}` : folderName }}
     </h2>
 
-    <div class="grid grid-cols-3 gap-4">
+    <div 
+        class="grid grid-cols-3 gap-4" 
+        ref="containerRef"
+        @scroll="handleScroll"
+        style="max-height: calc(100vh - 200px); overflow-y: auto;"
+    >
         <div v-for="item in [...displayedFolders, ...displayedFiles]" 
             :key="item.id" 
             class="flex flex-col items-center p-4 rounded-lg hover:bg-white/20 cursor-pointer"
             @click="handleItemClick(item)">
-			
+            
             <div class="icon mb-2">
                 <Folder v-if="'parent_id' in item" color="white" fill="white" :size="40" />
                 <File v-else color="grey" fill="grey" :size="40" />
@@ -18,78 +23,101 @@
             </div>
         </div>
     </div>
-
-    <!-- Show More Button -->
-    <div v-if="showMoreButton" class="mt-4 flex justify-center">
-        <button 
-            @click="handleLoadMore"
-            class="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white">
-            Show More
-        </button>
-    </div>
 </template>
 
 <script lang="ts">
 import { Folder, ChevronUp, ChevronDown, File } from 'lucide-vue-next';
-import { defineComponent, computed } from 'vue';
+import { defineComponent, computed, ref, onMounted, onUnmounted } from 'vue';
 import { PanelLeftBloc } from '../bloc/PanelLeftBloc';
 import { PanelRightBloc } from '../bloc/PanelRightBloc';
 import { GetFolderUseCase } from '../../application/use-cases/folder/GetFolderUseCase';
 import { FolderRepository } from '../../application/repository/FolderRepository';
+import type { FolderModel } from '../../domain/models/FolderModel';
+import type { FileModel } from '../../domain/models/FileModel';
 
 export default defineComponent({
-	name: 'PanelRight',
-	components: {
-		Folder,
-		ChevronUp,
-		ChevronDown,
-		File
-	},
-	setup() {
-		const panelLeft = new PanelLeftBloc(new GetFolderUseCase(new FolderRepository()));
-		const panelRightBloc = new PanelRightBloc();
-		
-		const isSearchActive = computed(() => panelRightBloc.isSearchActive);
-		const displayedFolders = computed(() => 
-			isSearchActive.value ? panelRightBloc.searchResults : panelLeft.folderActive
-		);
+    name: 'PanelRight',
+    components: {
+        Folder,
+        ChevronUp,
+        ChevronDown,
+        File
+    },
+    setup() {
+        const panelLeft = new PanelLeftBloc(new GetFolderUseCase(new FolderRepository()));
+        const panelRightBloc = new PanelRightBloc();
+        const containerRef = ref<HTMLElement | null>(null);
+        const isLoading = ref(false);
+        
+        const isSearchActive = computed(() => panelRightBloc.isSearchActive);
+        const displayedFolders = computed(() => 
+            isSearchActive.value ? panelRightBloc.searchResults : panelLeft.folderActive
+        );
 
-		const displayedFiles = computed(() => 
-			isSearchActive.value ? panelRightBloc.searchResultFiles : panelLeft.fileActive
-		);
-		const folderName = computed(() => panelRightBloc.folderName);
-		const showMoreButton = computed(() => 
-			(isSearchActive.value && panelRightBloc.hasMore) || 
-			(!isSearchActive.value && panelLeft.hasMore)
-		);
+        const displayedFiles = computed(() => 
+            isSearchActive.value ? panelRightBloc.searchResultFiles : panelLeft.fileActive
+        );
+        
+        const folderName = computed(() => panelRightBloc.folderName);
+        const showMoreButton = computed(() => 
+            (isSearchActive.value && panelRightBloc.hasMore) || 
+            (!isSearchActive.value && panelLeft.hasMore)
+        );
 
-		const hasMoreFolders = computed(() => panelRightBloc.loadMore);
+        const handleScroll = async (event: Event) => {
+            if (!showMoreButton.value || isLoading.value) return;
 
-		const handleLoadMore = async () => {
-			if (isSearchActive.value) {
-				await panelRightBloc.loadMore();
-			} else {
-				await panelLeft.loadMore();
-			}
-		};
+            const target = event.target as HTMLElement;
+            const { scrollTop, scrollHeight, clientHeight } = target;
+            const threshold = 50; // pixels from bottom
 
-		const handleItemClick = (item: FolderModel | FileModel) => {
-            if ('parent_id' in item) { // Check if item is a folder
+            if (scrollHeight - (scrollTop + clientHeight) < threshold) {
+                isLoading.value = true;
+                try {
+                    if (isSearchActive.value) {
+                        await panelRightBloc.loadMore();
+                    } else {
+                        await panelLeft.loadMore();
+                    }
+                } finally {
+                    isLoading.value = false;
+                }
+            }
+        };
+
+        const handleItemClick = (item: FolderModel | FileModel) => {
+            if ('parent_id' in item) {
                 panelLeft.selectFolder(item.id, item.name);
             }
         };
 
-		return {
-			displayedFolders,
-			displayedFiles,
-			isSearchActive,
-			folderName,
-			showMoreButton,
-			handleLoadMore,
-			hasMoreFolders,
-			handleItemClick
-		};
-	},
+        return {
+            containerRef,
+            displayedFolders,
+            displayedFiles,
+            isSearchActive,
+            folderName,
+            showMoreButton,
+            handleScroll,
+            handleItemClick
+        };
+    },
 })
-
 </script>
+
+<style scoped>
+.grid {
+    scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.grid::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.grid {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+</style>
